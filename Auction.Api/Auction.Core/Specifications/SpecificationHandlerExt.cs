@@ -4,7 +4,7 @@ namespace Auction.Core.Specifications;
 
 public static class SpecificationHandlerExt
 {
-    public static IQueryable<T> AppluSpecification<T>(this IQueryable<T> query, ISpecification<T> specification)
+    public static IQueryable<T> ApplySpecification<T>(this IQueryable<T> query, ISpecification<T> specification)
         where T : EntityBase
     {
         if (specification.Predicate is not null)

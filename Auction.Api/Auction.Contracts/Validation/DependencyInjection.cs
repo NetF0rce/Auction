@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
-namespace Auction.Core.Validation;
+namespace Auction.Contracts.Validation;
 
 public static class DependencyInjection
 {
