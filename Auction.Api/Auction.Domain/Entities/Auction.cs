@@ -40,9 +40,11 @@ public class Auction : EntityBase
     [ForeignKey(nameof(AuctionistId))]
     public User Auctionist { get; set; }
 
-    ICollection<AuctionImage> Images { get; set; }
+    public ICollection<AuctionImage> Images { get; set; }
 
-    ICollection<AuctionComment> Comments { get; set; }
+    public ICollection<AuctionComment> Comments { get; set; }
 
-    ICollection<AuctionScore> Scores { get; set; }
+    public ICollection<AuctionScore> Scores { get; set; }
+
+    public ICollection<Bid> Bids { get; set; }
 }

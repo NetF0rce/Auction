@@ -3,6 +3,7 @@ using Auction.Core.Specifications;
 using Auction.Domain.Entities;
 using Auction.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Auction.Infrastructure.Repositories;
 
@@ -59,5 +60,17 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
         context.Set<TEntity>().Remove(entity);
         await context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<long> CountAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await context.Set<TEntity>().CountAsync(predicate);
+    }
+
+    public async Task<int> DeleteRangeAsync(IEnumerable<TEntity> entities)
+    {
+        context.Set<TEntity>().RemoveRange(entities);
+
+        return await context.SaveChangesAsync();
     }
 }

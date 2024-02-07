@@ -3,6 +3,7 @@ using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
+using Auction.Domain.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,7 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         }
 
         var response = Mapper.Map<AuctionResponse>(auction);
+        response.ImageUrls = auction.Images.Select(x => x.Url).ToList();
         response.AuctionistUserId = auction.AuctionistId;
         response.AuctionistUsername = auction.Auctionist.Username;
 
@@ -62,7 +64,8 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         var result = auctions.Select(x =>
             {
                 var response = Mapper.Map<AuctionResponse>(x);
-                response.AuctionistUserId = x.Auctionist.Id;
+                response.ImageUrls = x.Images.Select(x => x.Url).ToList();
+                response.AuctionistUserId = x.AuctionistId;
                 response.AuctionistUsername = x.Auctionist.Username;
 
                 return response;
