@@ -14,7 +14,7 @@ public class RegisterDto
     public string FullName { get; set; }
 
     [Required]
-    public DateOnly DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     [Required]
     [MaxLength(30)]

@@ -11,6 +11,7 @@ public class UserProfile : Profile
     {
         CreateMap<User, UserDto>()
             .ForMember(ud => ud.Role, u => u.MapFrom(us => us.Role.ToString()));
-        CreateMap<RegisterDto, User>();
+        CreateMap<RegisterDto, User>()
+            .ForMember(u => u.DateOfBirth, r => r.MapFrom(pd => DateOnly.FromDateTime(pd.DateOfBirth)));
     }
 }

@@ -76,6 +76,8 @@ public class AuthorizationService : IAuthorizationService
         user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
         user.PasswordSalt = hmac.Key;
         user.Role = role;
+        user.IsDeleted = false;
+        
         await _unitOfWork.UserRepository.AddAsync(user);
 
         return new AuthorizationResponse

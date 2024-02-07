@@ -32,13 +32,11 @@ public class User : EntityBase
     [Required]
     public UserRole Role { get; set; }
 
-    [Required]
     [MaxLength(500)]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
-    [Required]
     [MaxLength(500)]
-    public string PublicId { get; set; }
+    public string? PublicId { get; set; }
 
     [Required]
     public bool IsDeleted { get; set; }

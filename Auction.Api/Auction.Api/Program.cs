@@ -8,6 +8,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -18,6 +20,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.ApplyMigrations();
+app.UseAuthorization();
+app.MapControllers();
 
 app.UseHttpsRedirection();
 
