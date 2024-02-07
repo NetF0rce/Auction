@@ -1,5 +1,7 @@
 ﻿using Auction.Core.Interfaces.Data;
+using Auction.Domain.Entities;
 using Auction.Infrastructure.Database;
+using Auction.Infrastructure.Repositories;
 
 namespace Auction.Infrastructure;
 
@@ -11,7 +13,9 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
     }
-    
+
+    public IBaseRepository<AuctionComment> AuctionCommentRepository { get; }
+
     public Task CreateTransactionAsync()
     {
         return _context.Database.BeginTransactionAsync();

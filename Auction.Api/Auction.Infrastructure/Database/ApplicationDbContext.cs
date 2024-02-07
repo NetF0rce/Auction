@@ -11,9 +11,4 @@ public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     public virtual DbSet<AuctionScore> AuctionScores { get; set; }
     public virtual DbSet<Bid> Bids { get; set; }
     public virtual DbSet<User> Users { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-    }
 }
