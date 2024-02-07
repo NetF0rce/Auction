@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+      <PackageReference Include="AutoMapper" Version="13.0.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
+      <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" Version="1.4.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Auction.Core\Auction.Core.csproj" />
       <ProjectReference Include="..\Auction.Domain\Auction.Domain.csproj" />
     </ItemGroup>
 
