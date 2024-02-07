@@ -2,7 +2,7 @@
 using Auction.Core.Interfaces.Comments;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Auction.Api;
+namespace Auction.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

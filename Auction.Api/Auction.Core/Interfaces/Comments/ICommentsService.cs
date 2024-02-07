@@ -6,7 +6,7 @@ namespace Auction.Core.Interfaces.Comments;
 
 public interface ICommentsService
 {
-    Task<List<GetCommentDto>> GetCommentsByAuctionId(long auctionId);
+    Task<List<GetCommentDto?>> GetCommentsByAuctionId(long auctionId);
     Task<GetCommentDto> CreateComment(CreateCommentDto createCommentDto);
     Task DeleteComment(long commentId);
 }

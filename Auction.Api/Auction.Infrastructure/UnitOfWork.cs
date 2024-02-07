@@ -8,13 +8,13 @@ namespace Auction.Infrastructure;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
-
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(ApplicationDbContext context, ICommentRepository commentsRepository)
     {
         _context = context;
+        CommentsRepository = commentsRepository;
     }
 
-    public IBaseRepository<AuctionComment> AuctionCommentRepository { get; }
+    public ICommentRepository CommentsRepository { get; init; }
 
     public Task CreateTransactionAsync()
     {
