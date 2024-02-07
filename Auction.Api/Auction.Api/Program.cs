@@ -1,5 +1,4 @@
 using Auction.Api.Extensions;
-using Auction.Core.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDependencies(builder.Configuration);
-builder.Services.AddCore(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

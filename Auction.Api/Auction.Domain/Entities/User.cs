@@ -23,11 +23,11 @@ public class User : EntityBase
 
     [Required]
     [MaxLength(300)]
-    public string PasswordHash { get; set; }
+    public byte[] PasswordHash { get; set; }
 
     [Required]
     [MaxLength(300)]
-    public string PasswordSalt { get; set; }
+    public byte[] PasswordSalt { get; set; }
 
     [Required]
     public UserRole Role { get; set; }
