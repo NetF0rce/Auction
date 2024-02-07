@@ -8,37 +8,31 @@ namespace Auction.Infrastructure.Repositories;
 
 public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : EntityBase
 {
-    private readonly ApplicationDbContext _context;
+    protected readonly ApplicationDbContext context;
 
     protected BaseRepository(ApplicationDbContext context)
     {
-        _context = context;
+        this.context = context;
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync(ISpecification<TEntity> specification)
     {
-        return await _context.Set<TEntity>()
+        return await context.Set<TEntity>()
             .ApplySpecification(specification)
             .ToListAsync();
     }
 
-    public virtual async Task<TEntity> GetByIdAsync(long id)
+    public virtual async Task<TEntity?> GetByIdAsync(long id)
     {
-        var entity = await _context.Set<TEntity>()
+        var entity = await context.Set<TEntity>()
             .FirstOrDefaultAsync(e => e.Id == id);
-
-        if (entity is null)
-        {
-            // TODO: add custom exception
-            throw new Exception(nameof(entity));
-        }
 
         return entity;
     }
 
     public async Task<bool> IsExistAsync(long id)
     {
-        var entity = await _context.Set<TEntity>()
+        var entity = await context.Set<TEntity>()
             .FirstOrDefaultAsync(e => e.Id == id);
 
         return entity is not null;
@@ -46,15 +40,15 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
 
     public virtual async Task<TEntity> AddAsync(TEntity entity)
     {
-        var entityEntry = (await _context.Set<TEntity>().AddAsync(entity)).Entity;
-        await _context.SaveChangesAsync();
+        var entityEntry = (await context.Set<TEntity>().AddAsync(entity)).Entity;
+        await context.SaveChangesAsync();
         return entityEntry;
     }
 
     public virtual async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        var updatedModel = _context.Set<TEntity>().Update(entity).Entity;
-        await _context.SaveChangesAsync();
+        var updatedModel = context.Set<TEntity>().Update(entity).Entity;
+        await context.SaveChangesAsync();
         return updatedModel;
     }
 
@@ -62,8 +56,8 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
     {
         var entity = await GetByIdAsync(id);
 
-        _context.Set<TEntity>().Remove(entity);
-        await _context.SaveChangesAsync();
+        context.Set<TEntity>().Remove(entity);
+        await context.SaveChangesAsync();
         return true;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Auction.Core.Enums;
+﻿using Auction.Contracts.Enums;
 using Auction.Domain.Entities;
 using System.Linq.Expressions;
 
