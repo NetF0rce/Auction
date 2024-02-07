@@ -1,6 +1,6 @@
-﻿using Auction.Core.Validation;
+﻿using Auction.Contracts.Mapping.Profiles;
+using Auction.Contracts.Validation;
 using Auction.Infrastructure.Database;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auction.Api.Extensions;
@@ -13,6 +13,7 @@ public static class DependencyInjectionExtension
             opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddValidation();
+        services.AddAutoMapper(typeof(UserProfile).Assembly);
         return services;
     }
 }

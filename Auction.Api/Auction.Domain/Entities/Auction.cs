@@ -34,6 +34,9 @@ public class Auction : EntityBase
     [Required]
     public AuctionStatus Status { get; set; }
 
+    [Required]
+    public bool IsPaid { get; set; }
+
     [ForeignKey(nameof(AuctionistId))]
     public User Auctionist { get; set; }
 

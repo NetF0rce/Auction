@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Auction.Contracts\Auction.Contracts.csproj" />
       <ProjectReference Include="..\Auction.Domain\Auction.Domain.csproj" />
-      <ProjectReference Include="..\Auction.Infrastructure\Auction.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
