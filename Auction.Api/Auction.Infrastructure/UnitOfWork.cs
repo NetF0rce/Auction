@@ -1,6 +1,7 @@
 ﻿using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Users;
 using Auction.Domain.Entities;
+using Auction.Core.Interfaces.Users;
 using Auction.Infrastructure.Database;
 using Auction.Infrastructure.Repositories;
 
@@ -20,7 +21,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
-        CommentRepository commentsRepository,
+        CommentsRepository commentsRepository,
         IUserRepository userRepository,
         IBidsRepository bidsRepository)
     {
