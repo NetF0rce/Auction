@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from '../material/material.module';
 import { TextInputComponent } from './components/text-input/text-input.component';
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialLoginModule } from '@abacritt/angularx-social-login';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from '../app.routes';
 
 
 
@@ -16,7 +17,10 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    AppRoutingModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule,
   ],
   exports: [
     TextInputComponent,
@@ -27,6 +31,9 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    AppRoutingModule,
+    SocialLoginModule,
+    GoogleSigninButtonModule
   ]
 })
 export class SharedModule { }

@@ -20,6 +20,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(builder => builder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4201", "http://localhost:4200", "https://relaxinema.onrender.com"));
 app.ApplyMigrations();
 app.UseAuthorization();
 app.MapControllers();

@@ -21,7 +21,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
-        ICommentRepository commentsRepository,
+        ICommentsRepository commentsRepository,
         IUserRepository userRepository,
         IBidsRepository bidsRepository)
     {
