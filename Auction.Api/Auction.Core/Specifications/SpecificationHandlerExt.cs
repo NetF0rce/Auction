@@ -1,4 +1,5 @@
-﻿using Auction.Domain.Entities;
+﻿using Auction.Contracts.Enums;
+using Auction.Domain.Entities;
 
 namespace Auction.Core.Specifications;
 
@@ -16,10 +17,10 @@ public static class SpecificationHandlerExt
         {
             switch (specification.SortOrder)
             {
-                case Enums.SortDirection.ASC:
+                case SortDirection.ASC:
                     query = query.OrderBy(specification.SortBy);
                     break;
-                case Enums.SortDirection.DESC:
+                case SortDirection.DESC:
                     query = query.OrderByDescending(specification.SortBy);
                     break;
             }
