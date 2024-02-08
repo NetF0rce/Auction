@@ -17,7 +17,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly IBidsRepository _bidsRepository;
     public IBidsRepository BidsRepository => _bidsRepository;
 
-    public ICommentRepository CommentsRepository { get; init; }
+    public ICommentsRepository CommentsRepository { get; init; }
     public IUserRepository UserRepository { get; }
 
     public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,

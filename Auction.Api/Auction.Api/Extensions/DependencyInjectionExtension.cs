@@ -23,7 +23,7 @@ public static class DependencyInjectionExtension
     {
         services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-        
+      
         services.AddCore(configuration);
         services.AddInfrastructure(configuration);
 

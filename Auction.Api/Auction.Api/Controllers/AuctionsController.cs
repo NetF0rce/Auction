@@ -35,7 +35,7 @@ namespace Auction.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> PublishAuction([FromBody] PublishAuctionRequest request)
+        public async Task<ActionResult> PublishAuction([FromForm] PublishAuctionRequest request)
         {
             await _auctionsService.PublishAuctionAsync(request);
 
