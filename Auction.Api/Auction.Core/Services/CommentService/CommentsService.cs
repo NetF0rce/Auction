@@ -24,13 +24,13 @@ public class CommentsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccess
         
         var totalPages = (int)Math.Ceiling((double)totalComments / commentFilterDto.PageSize);
 
-
         var result = new ListModel<GetCommentDto>
         {
             Data = comments.Select(c => Mapper.Map<GetCommentDto>(comments)).ToList(),
             TotalPages = totalPages,
             CurrentPage = commentFilterDto.PageNumber,
         };
+
         return result;
     }
 
@@ -70,7 +70,8 @@ public class CommentsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccess
             throw new ArgumentException("Comment not found");
         }
         var comment = await UnitOfWork.CommentsRepository.GetByIdAsync(commentId);
-        comment.IsDeleted = true;
+
+        comment!.IsDeleted = true;
         await UnitOfWork.CommentsRepository.UpdateAsync(comment);
     }
 }

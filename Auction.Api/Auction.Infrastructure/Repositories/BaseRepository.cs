@@ -23,18 +23,9 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
             .ToListAsync();
     }
 
-    public virtual async Task<TEntity> GetByIdAsync(long id)
+    public virtual async Task<TEntity?> GetByIdAsync(long id)
     {
-        var entity = await context.Set<TEntity>()
-            .FirstOrDefaultAsync(e => e.Id == id);
-
-        if (entity is null)
-        {
-            // TODO: add custom exception
-            throw new Exception(nameof(entity));
-        }
-
-        return entity;
+        return await context.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == id);
     }
 
     public async Task<bool> IsExistAsync(long id)
