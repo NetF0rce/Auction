@@ -1,5 +1,7 @@
 ﻿using Auction.Core.Interfaces.Data;
+using Auction.Domain.Entities;
 using Auction.Infrastructure.Database;
+using Auction.Infrastructure.Repositories;
 
 namespace Auction.Infrastructure;
 
@@ -12,15 +14,18 @@ public class UnitOfWork : IUnitOfWork
 
     private readonly IBidsRepository _bidsRepository;
     public IBidsRepository BidsRepository => _bidsRepository;
+    
+    public ICommentRepository CommentsRepository { get; init; }
 
-    public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
+    public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository, 
+        CommentRepository commentsRepository,
         IBidsRepository bidsRepository)
     {
         _context = context;
         _auctionsRepository = auctionsRepository;
         _bidsRepository = bidsRepository;
+        CommentsRepository = commentsRepository;
     }
-
     public Task CreateTransactionAsync()
     {
         return _context.Database.BeginTransactionAsync();
