@@ -35,6 +35,7 @@ public static class DependencyInjectionExtension
 
         services.AddScoped<IAuctionsRepository, AuctionsRepository>();
         services.AddScoped<IBidsRepository, BidsRepository>();
+        services.AddScoped<ICommentsRepository, CommentsRepository>();
         services.AddCore(configuration);
         services.AddInfrastructure();
 
