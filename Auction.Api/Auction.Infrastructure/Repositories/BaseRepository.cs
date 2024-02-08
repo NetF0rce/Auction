@@ -1,9 +1,9 @@
-﻿using Auction.Core.Interfaces.Data;
+using System.Linq.Expressions;
+using Auction.Core.Interfaces.Data;
 using Auction.Core.Specifications;
 using Auction.Domain.Entities;
 using Auction.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Auction.Infrastructure.Repositories;
 
@@ -23,10 +23,16 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
             .ToListAsync();
     }
 
-    public virtual async Task<TEntity?> GetByIdAsync(long id)
+    public virtual async Task<TEntity> GetByIdAsync(long id)
     {
         var entity = await context.Set<TEntity>()
             .FirstOrDefaultAsync(e => e.Id == id);
+
+        if (entity is null)
+        {
+            // TODO: add custom exception
+            throw new Exception(nameof(entity));
+        }
 
         return entity;
     }
