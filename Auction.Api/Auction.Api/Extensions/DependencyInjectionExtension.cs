@@ -7,6 +7,8 @@ using Auction.Core.Interfaces.UserAccessor;
 using Auction.Core.Interfaces.Users;
 using Auction.Core.Services.Authorization;
 using Auction.Core.Services.UserAccessor;
+using Auction.Core.Extensions.DependencyInjection;
+using Auction.Infrastructure.DependencyInjection;
 using Auction.Infrastructure;
 using Auction.Infrastructure.Database;
 using Auction.Infrastructure.Repositories;
@@ -22,9 +24,7 @@ public static class DependencyInjectionExtension
         services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-        services.AddValidation();
-        services.AddAutoMapper(typeof(UserProfile).Assembly);
-        
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserAccessor, UserAccessor>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
@@ -32,8 +32,15 @@ public static class DependencyInjectionExtension
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
-        
-        
+
+        services.AddScoped<IAuctionsRepository, AuctionsRepository>();
+        services.AddScoped<IBidsRepository, BidsRepository>();
+        services.AddCore(configuration);
+        services.AddInfrastructure();
+
+        services.AddValidation();
+        services.AddAutoMapper(typeof(UserProfile).Assembly);
+
         return services;
     }
 }
