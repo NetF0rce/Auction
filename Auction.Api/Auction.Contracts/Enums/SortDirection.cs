@@ -1,4 +1,4 @@
-﻿namespace Auction.Core.Enums;
+﻿namespace Auction.Contracts.Enums;
 
 public enum SortDirection
 {
