@@ -11,7 +11,7 @@ public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity> where T
 {
     protected readonly ApplicationDbContext context;
 
-    protected BaseRepository(ApplicationDbContext context)
+    public BaseRepository(ApplicationDbContext context)
     {
         this.context = context;
     }
