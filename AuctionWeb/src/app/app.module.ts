@@ -1,35 +1,40 @@
-import {NgModule} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-
-import {AppRoutingModule} from './app.routes';
-import {AppComponent} from "./app.component";
-import {BrowserModule} from "@angular/platform-browser";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
-import {SharedModule} from "./shared/shared.module";
-import {CoreModule} from "./core/core.module";
+import { NgModule } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AppRoutingModule } from './app.routes';
+import { AppComponent } from "./app.component";
+import { FormsModule } from "@angular/forms";
+import { SharedModule } from "./shared/shared.module";
+import { CoreModule } from "./core/core.module";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {MatButton} from "@angular/material/button";
+import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import { AuthModule } from './modules/auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
     SharedModule,
     AppRoutingModule,
     RouterOutlet,
-    ReactiveFormsModule,
-    HttpClientModule,
     FormsModule,
     CoreModule,
-    MatButton,
+    AuthModule,
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('1038141147992-9tbh1kiha40f9cb7s5ve10rttgusfa8k.apps.googleusercontent.com')
+          },
+        ]
+      } as SocialAuthServiceConfig,
+    },
   ],
   bootstrap: [AppComponent]
 })

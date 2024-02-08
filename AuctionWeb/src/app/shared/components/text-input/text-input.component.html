@@ -1,0 +1,28 @@
+<mat-form-field appearance="outline"
+                class="w-100 mb-2">
+       <mat-label>{{label}}</mat-label>
+       <input matInput
+              type={{type}}
+              [formControl]="control"
+              placeholder={{label}}>
+       <mat-error class="mt-1"
+                  *ngIf="control.errors?.['required']">
+              Будь ласка введіть {{label}}
+       </mat-error>
+       <mat-error class="mt-1"
+                  *ngIf="control.errors?.['email']">
+              Введіть валідну пошту
+       </mat-error>
+       <mat-error class="mt-1"
+                  *ngIf="control.errors?.['minlength']">
+              {{label}} в діапазоні {{control.errors?.['minlength'].requiredLength}} символів
+       </mat-error>
+       <mat-error class="mt-1"
+                  *ngIf="control.errors?.['maxlength']">
+              {{label}} більше ніж {{control.errors?.['maxlength'].requiredLength}} символів
+       </mat-error>
+       <mat-error class="mt-1"
+                  *ngIf="control.errors?.['notMatching']">
+              Паролі не співпадають
+       </mat-error>
+</mat-form-field>
