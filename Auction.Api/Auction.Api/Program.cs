@@ -1,5 +1,4 @@
 using Auction.Api.Extensions;
-using Auction.Core.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +9,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddDependencies(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -20,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.ApplyMigrations();
+app.UseAuthorization();
+app.MapControllers();
 
 app.UseHttpsRedirection();
 

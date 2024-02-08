@@ -9,12 +9,11 @@ public class UserRepository(ApplicationDbContext context) : BaseRepository<User>
 {
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await context.User.FirstOrDefaultAsync(u => u.Email == email);
+        return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public async Task<User?> GetByUserNameAsync(string userName)
     {
-        return await context.User.FirstOrDefaultAsync(u => u.Username == userName);
+        return await context.Users.FirstOrDefaultAsync(u => u.Username == userName);
     }
-
 }

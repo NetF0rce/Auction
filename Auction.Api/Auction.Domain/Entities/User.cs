@@ -23,22 +23,20 @@ public class User : EntityBase
 
     [Required]
     [MaxLength(300)]
-    public string PasswordHash { get; set; }
+    public byte[] PasswordHash { get; set; }
 
     [Required]
     [MaxLength(300)]
-    public string PasswordSalt { get; set; }
+    public byte[] PasswordSalt { get; set; }
 
     [Required]
     public UserRole Role { get; set; }
 
-    [Required]
     [MaxLength(500)]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
-    [Required]
     [MaxLength(500)]
-    public string PublicId { get; set; }
+    public string? PublicId { get; set; }
 
     [Required]
     public bool IsDeleted { get; set; }
