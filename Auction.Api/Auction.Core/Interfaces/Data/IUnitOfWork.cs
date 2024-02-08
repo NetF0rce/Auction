@@ -10,9 +10,6 @@ public interface IUnitOfWork
     public IAuctionsRepository AuctionsRepository { get; }
     public IBidsRepository BidsRepository { get; }
     public ICommentRepository CommentsRepository { get; init; }
-    public IAuctionsRepository AuctionsRepository { get; }
-    public IBidsRepository BidsRepository { get; }
-    public ICommentRepository CommentsRepository { get; init; }
 
     public Task CreateTransactionAsync();
     public Task CommitTransactionAsync();
