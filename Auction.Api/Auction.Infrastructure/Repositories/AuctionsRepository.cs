@@ -12,7 +12,7 @@ namespace Auction.Infrastructure.Repositories
 
         public override async Task<Domain.Entities.Auction?> GetByIdAsync(long id)
         {
-            return await context.Auctions
+            return await context.Auction
                 .Include(x => x.Auctionist)
                 .Include(x => x.Images)
                 .Include(x => x.Scores)

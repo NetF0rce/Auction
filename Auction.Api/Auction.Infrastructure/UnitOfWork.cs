@@ -17,8 +17,9 @@ public class UnitOfWork : IUnitOfWork
     
     public ICommentRepository CommentsRepository { get; init; }
 
-    public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository, 
-        CommentRepository commentsRepository,
+    public UnitOfWork(ApplicationDbContext context,
+        IAuctionsRepository auctionsRepository, 
+        ICommentRepository commentsRepository,
         IBidsRepository bidsRepository)
     {
         _context = context;
