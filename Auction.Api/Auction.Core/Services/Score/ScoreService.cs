@@ -17,6 +17,20 @@ public class ScoreService : BaseService, IScoreService
         _userAccessor = userAccessor;
     }
 
+    public async Task<GetAuctionScoreDto> GetScoreAsync(long auctionId)
+    {
+        var specBuilder = new SpecificationBuilder<AuctionScore>()
+            .With(s => s.AuctionId == auctionId && s.UserId == _userAccessor.GetCurrentUserId());
+        var spec = specBuilder.Build();
+        var score = (await UnitOfWork.ScoreRepository.GetAllAsync(spec)).FirstOrDefault();
+        if (score is null)
+        {
+            throw new ArgumentException("Score not found");
+        }
+        var result = Mapper.Map<GetAuctionScoreDto>(score);
+        return result;
+    }
+
     public async Task<GetAuctionScoreDto> CreateOrUpdateScoreAsync(CreateOrUpdateScoreDto dto)
     {
         var score = Mapper.Map<AuctionScore>(dto);

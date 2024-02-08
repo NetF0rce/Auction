@@ -18,6 +18,13 @@ public class ScoreController : ControllerBase
         _scoreService = scoreService;
     }
     
+    [HttpGet("{auctionId}")]
+    public async Task<ActionResult> GetScore(long auctionId)
+    {
+        var result = await _scoreService.GetScoreAsync(auctionId);
+        return Ok(result);
+    }
+    
     [HttpPost]
     public async Task<ActionResult> CreateOrUpdateScore(CreateOrUpdateScoreDto dto)
     {

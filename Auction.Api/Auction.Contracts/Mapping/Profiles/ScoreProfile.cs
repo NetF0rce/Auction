@@ -9,5 +9,6 @@ public class ScoreProfile : Profile
     public ScoreProfile()
     {
         CreateMap<CreateOrUpdateScoreDto, AuctionScore>();
+        CreateMap<AuctionScore, GetAuctionScoreDto>();
     }
 }
