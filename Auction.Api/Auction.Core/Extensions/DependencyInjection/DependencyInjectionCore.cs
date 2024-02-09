@@ -10,6 +10,8 @@ using Auction.Core.Services.UserAccessor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Relaxinema.Core.Services;
+using Auction.Core.Interfaces.Images;
+using Auction.Core.Services.Images;
 
 namespace Auction.Core.Extensions.DependencyInjection;
 
@@ -21,6 +23,8 @@ public static class DependencyInjectionCore
       
         services.AddScoped<IAuctionsService, AuctionsService>();
         services.AddScoped<IAuctionsVerificationService, AuctionsVerificationService>();
+
+        services.AddScoped<IImagesService, ImagesService>();
       
         services.AddScoped<ICommentsService, CommentsService>();
         
