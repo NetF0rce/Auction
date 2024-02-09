@@ -32,7 +32,7 @@ public class AuthorizationService : BaseService, IAuthorizationService
     {
         var user = await UnitOfWork.UserRepository.GetByEmailAsync(loginDto.Email);
 
-        if (user is null) 
+        if (user is null)
             throw new AuthenticationException("Invalid Username");
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -75,7 +75,7 @@ public class AuthorizationService : BaseService, IAuthorizationService
         user.PasswordSalt = hmac.Key;
         user.Role = role;
         user.IsDeleted = false;
-        
+
         await UnitOfWork.UserRepository.AddAsync(user);
 
         return new AuthorizationResponse
@@ -96,7 +96,16 @@ public class AuthorizationService : BaseService, IAuthorizationService
 
         if (user is null)
         {
-            user = new User { Email = payload.Email, Username = payload.Email, ImageUrl = payload.Picture };
+            user = new User
+            {
+                Email = payload.Email, 
+                FullName = payload.GivenName + " " + payload.FamilyName,
+                Username = payload.Email, 
+                ImageUrl = payload.Picture,
+                Role = UserRole.Customer,
+                IsDeleted = false
+            };
+            
             await UnitOfWork.UserRepository.AddAsync(user);
         }
 
