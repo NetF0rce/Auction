@@ -6,6 +6,7 @@ using Auction.Core.Services.Auctions;
 using Auction.Core.Interfaces.Comments;
 using Auction.Core.Services;
 using Auction.Core.Services.Authorization;
+using Auction.Core.Services.CommentService;
 using Auction.Core.Services.UserAccessor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,5 @@
 ﻿using Auction.Contracts.Dto;
+using Auction.Contracts.DTO;
 using Auction.Core.Interfaces.Comments;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,9 @@ namespace Auction.Api.Controllers;
 public class CommentsController(ICommentsService commentsService) : ControllerBase 
 {
     [HttpGet("{auctionId}")]
-    public async Task<IActionResult> GetComments(long auctionId)
+    public async Task<IActionResult> GetComments(long auctionId, [FromQuery]CommentFilterDto filter)
     {
-        var comments = await commentsService.GetCommentsByAuctionId(auctionId);
+        var comments = await commentsService.GetCommentsByAuctionId(auctionId, filter);
         return Ok(comments);
     }
     

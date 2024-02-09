@@ -2,9 +2,10 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthorizationDeepLinkingService } from '../../../core/services/authorization-deep-linking.service';
-import { FacebookLoginProvider, SocialAuthService } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { Subscription, take } from 'rxjs';
 import { AccountService } from '../../../core/services/account.service';
+import { User } from '../../../models/User/user';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initializeForm();
     this.returnUrl = this.authorizationService.getReturnUrl();
+    this.setCurrentUser();
+    this.socialAuthService.authState
+      .subscribe((user: SocialUser) => {
+        if (user) {
+          this.accountService.externalLogin({ idToken: user.idToken, provider: user.provider }).subscribe();
+          this.router.navigate(['/login'])
+        }
+      });
   }
 
   ngOnDestroy(): void {
@@ -61,6 +70,17 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   signInWithFB(): void {
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
+  }
+
+  setCurrentUser() {
+    const userString = localStorage.getItem('user');
+    if (!userString) return;
+    const user: User = JSON.parse(userString);
+    this.accountService.setCurrentUser(user);
+  }
+
+  getState(outlet: any) {
+    return outlet.isActivated ? outlet.activatedRoute.snapshot.url[0].path : "";
   }
 
 }

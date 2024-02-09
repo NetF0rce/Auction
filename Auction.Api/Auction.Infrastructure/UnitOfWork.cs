@@ -14,12 +14,12 @@ public class UnitOfWork : IUnitOfWork
     private readonly IBidsRepository _bidsRepository;
     public IBidsRepository BidsRepository => _bidsRepository;
 
-    public ICommentRepository CommentsRepository { get; init; }
+    public ICommentsRepository CommentsRepository { get; init; }
     public IUserRepository UserRepository { get; }
     public IAuctionImagesRepository AuctionImagesRepository { get; init; }
 
     public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
-        ICommentRepository commentsRepository,
+        ICommentsRepository commentsRepository,
         IUserRepository userRepository,
         IBidsRepository bidsRepository, 
         IAuctionImagesRepository auctionImagesRepository)

@@ -3,7 +3,7 @@ using Auction.Domain.Entities;
 
 namespace Auction.Core.Interfaces.Data;
 
-public interface ICommentRepository : IBaseRepository<AuctionComment>
+public interface ICommentsRepository : IBaseRepository<AuctionComment>
 {
     
 }
