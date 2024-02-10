@@ -2,13 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppRoutingModule } from './app.routes';
 import { AppComponent } from "./app.component";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "./shared/shared.module";
 import { CoreModule } from "./core/core.module";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
-import { AuthModule } from './modules/auth/auth.module';
-import {HeaderComponent} from "./shared/components/header/header.component";
+import { HeaderComponent } from "./shared/components/header/header.component";
 
 @NgModule({
   declarations: [
@@ -20,7 +19,6 @@ import {HeaderComponent} from "./shared/components/header/header.component";
     RouterOutlet,
     FormsModule,
     CoreModule,
-    AuthModule,
     HeaderComponent,
     ReactiveFormsModule
   ],

@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog, MatDialogActions, MatDialogContent, MatDialogRef} from "@angular/material/dialog";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {RegisterComponent} from "../register/register.component";
-import {ValidationsFn} from "../../../helpers/validations";
-import {AccountService} from "../../../../core/services/account.service";
+import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef } from "@angular/material/dialog";
+import { MatFormField } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
+import { MatButton } from "@angular/material/button";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { RegisterComponent } from "../register/register.component";
+import { ValidationsFn } from "../../../helpers/validations";
+import { AccountService } from "../../../../core/services/account.service";
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -18,20 +19,21 @@ import {AccountService} from "../../../../core/services/account.service";
     MatInput,
     MatButton,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    GoogleSigninButtonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit{
+export class LoginComponent implements OnInit {
   public email: string = '';
   public password: string = '';
   public loginForm: FormGroup = new FormGroup({});
 
   constructor(private dialogRef: MatDialogRef<LoginComponent>,
-              private dialog: MatDialog,
-              private fb: FormBuilder,
-              private accountService: AccountService) { }
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    private accountService: AccountService) { }
 
   public ngOnInit(): void {
     this.initializeForm();

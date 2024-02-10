@@ -1,15 +1,33 @@
 <mat-dialog-content>
   <h2>Увійти</h2>
   <mat-form-field appearance="fill">
-    <input [formControl]="$any(loginForm.controls['email'])" matInput placeholder="Електронна пошта" [(ngModel)]="email">
+    <input [formControl]="$any(loginForm.controls['email'])"
+           matInput
+           placeholder="Електронна пошта"
+           [(ngModel)]="email">
   </mat-form-field>
   <mat-form-field appearance="fill">
-    <input [formControl]="$any(loginForm.controls['password'])" matInput type="password" placeholder="Пароль" [(ngModel)]="password">
+    <input [formControl]="$any(loginForm.controls['password'])"
+           matInput
+           type="password"
+           placeholder="Пароль"
+           [(ngModel)]="password">
   </mat-form-field>
+  <div class="w-100 d-flex justify-content-center">
+    <asl-google-signin-button class="mt-2 mx-auto"
+                              type="icon"
+                              size="large"></asl-google-signin-button>
+  </div>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onRegister()">Зареєструватися</button>
-  <button mat-button (click)="onCancel()">Відмінити</button>
-  <button mat-raised-button color="primary" (click)="onLogin()">Увійти</button>
-</mat-dialog-actions>
 
+
+
+<mat-dialog-actions align="end">
+  <button mat-button
+          (click)="onRegister()">Зареєструватися</button>
+  <button mat-button
+          (click)="onCancel()">Відмінити</button>
+  <button mat-raised-button
+          color="primary"
+          (click)="onLogin()">Увійти</button>
+</mat-dialog-actions>
