@@ -1,6 +1,7 @@
 ﻿using Auction.Contracts.DTO;
 using Auction.Core.Interfaces;
 using Auction.Core.Interfaces.Data;
+using Auction.Core.Interfaces.UserAccessor;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
 using Auction.Domain.Entities;
@@ -10,9 +11,9 @@ namespace Auction.Core.Services.Score;
 
 public class ScoreService : BaseService, IScoreService
 {
-    private readonly UserAccessor.UserAccessor _userAccessor;
+    private readonly IUserAccessor _userAccessor;
 
-    public ScoreService(IUnitOfWork unitOfWork, IMapper mapper, UserAccessor.UserAccessor userAccessor) : base(unitOfWork, mapper)
+    public ScoreService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccessor userAccessor) : base(unitOfWork, mapper)
     {
         _userAccessor = userAccessor;
     }

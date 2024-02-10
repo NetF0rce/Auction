@@ -23,7 +23,7 @@ public class UnitOfWork : IUnitOfWork
         ICommentsRepository commentsRepository,
         IUserRepository userRepository,
         IBidsRepository bidsRepository, 
-        IAuctionImagesRepository auctionImagesRepository)
+        IAuctionImagesRepository auctionImagesRepository,
         IScoreRepository scoreRepository)
     {
         _context = context;
@@ -33,7 +33,6 @@ public class UnitOfWork : IUnitOfWork
         UserRepository = userRepository;
         AuctionImagesRepository = auctionImagesRepository;
         ScoreRepository = scoreRepository;
-
     }
 
     public Task CreateTransactionAsync()
