@@ -1,0 +1,29 @@
+<header class="header">
+  <div class="container">
+    <a routerLink="/home"><h1 class="logo">BuyDuck</h1></a>
+    <nav class="navigation">
+      <a routerLink="/home" class="nav-link">Auctions</a>
+      <a routerLink="/films" class="nav-link">My list</a>
+      <a *ngIf="(accountService.currentUser$ | async)" routerLink="/list" class="nav-link">My
+        list</a>
+      <a routerLink="/admin" class="nav-link">Admin</a>
+    </nav>
+  </div>
+  <div class="user-sector">
+    <button mat-raised-button color="primary"
+      *ngIf="!(accountService.currentUser$ | async)"
+            (click)="openLoginModal()">
+      Log in
+    </button>
+    <div *ngIf="(accountService.currentUser$ | async) as user">
+      <button (click)="toggleDropdown()">
+        <app-avatar [name]="user.userDto.username" [photoUrl]="user.userDto.imageUrl" [size]="40"></app-avatar>
+        {{ user.userDto.username }}
+      </button>
+      <div *ngIf="showDropdown" class="dropdown">
+        <a routerLink="/profile" class="dropdown-link" (click)="toggleDropdown()">Profile</a>
+        <a class="dropdown-link-danger" (click)="logout()">Log out</a>
+      </div>
+    </div>
+  </div>
+</header>
