@@ -16,20 +16,23 @@ public class UnitOfWork : IUnitOfWork
 
     private readonly IBidsRepository _bidsRepository;
     public IBidsRepository BidsRepository => _bidsRepository;
-
     public ICommentsRepository CommentsRepository { get; init; }
+    public IScoreRepository ScoreRepository { get; init; }
     public IUserRepository UserRepository { get; }
 
-    public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
+    public UnitOfWork(ApplicationDbContext context, 
+        IAuctionsRepository auctionsRepository,
         ICommentsRepository commentsRepository,
         IUserRepository userRepository,
-        IBidsRepository bidsRepository)
+        IBidsRepository bidsRepository,
+        IScoreRepository scoreRepository)
     {
         _context = context;
         _auctionsRepository = auctionsRepository;
         _bidsRepository = bidsRepository;
         CommentsRepository = commentsRepository;
         UserRepository = userRepository;
+        ScoreRepository = scoreRepository;
     }
 
     public Task CreateTransactionAsync()
