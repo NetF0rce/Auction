@@ -15,7 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Relaxinema.Core.Services;
 using Auction.Core.Interfaces.Images;
+using Auction.Core.Interfaces.Profile;
 using Auction.Core.Services.Images;
+using Auction.Core.Services.Profile;
 
 namespace Auction.Core.Extensions.DependencyInjection;
 
@@ -34,6 +36,7 @@ public static class DependencyInjectionCore
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IBidService, BidService>();
+        services.AddScoped<IProfileService, ProfileService>();
         services.AddTransient<JwtHelper>();
       
         return services;
