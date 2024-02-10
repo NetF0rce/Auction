@@ -1,0 +1,26 @@
+<mat-dialog-content>
+  <h2>Зареєструватися</h2>
+  <mat-form-field appearance="fill">
+    <input matInput placeholder="Юзернейм" [formControl]="$any(registerForm.controls['username'])">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput placeholder="Повне ім'я" [formControl]="$any(registerForm.controls['fullName'])">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput type="date" placeholder="Дата народження" [formControl]="$any(registerForm.controls['dob'])">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput placeholder="Електронна пошта" [formControl]="$any(registerForm.controls['email'])">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput type="password" placeholder="Пароль" [formControl]="$any(registerForm.controls['password'])">
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <input matInput type="password" placeholder="Підтвердження паролю" [formControl]="$any(registerForm.controls['confirmPassword'])">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="openLoginModal()">Увійти</button>
+  <button mat-button (click)="onCancel()">Відмінити</button>
+  <button mat-raised-button color="primary" (click)="onRegister()">Зареєструватися</button>
+</mat-dialog-actions>
