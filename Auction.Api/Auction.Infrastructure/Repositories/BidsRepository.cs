@@ -2,13 +2,14 @@
 using Auction.Domain.Entities;
 using Auction.Infrastructure.Database;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auction.Infrastructure.Repositories;
 
-public class BidsRepository : BaseRepository<Bid>, IBidsRepository
+public class BidsRepository(ApplicationDbContext context) : BaseRepository<Bid>(context), IBidsRepository
 {
-    public BidsRepository(ApplicationDbContext context)
-        : base(context)
+    public async Task<IEnumerable<Bid>> GetBidsByAuctionIdAsync(long id)
     {
+        return await context.Bid.Where(a => a.AuctionId == id).OrderByDescending(a => a.Amout).ToListAsync();
     }
 }
