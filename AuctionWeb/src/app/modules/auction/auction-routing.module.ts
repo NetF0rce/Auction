@@ -9,7 +9,7 @@ const routes: Routes = [
     component: AuctionListComponent
   },
   {
-    path: 'create',
+    path: ':id',
     component: AuctionCreateComponent
   }
 ];

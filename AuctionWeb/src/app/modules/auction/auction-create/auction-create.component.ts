@@ -4,6 +4,8 @@ import { environment } from '../../../../environments/environment';
 import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuctionDto } from '../../../models/Auction/auction-dto';
 
 @Component({
   selector: 'auction-create',
@@ -13,12 +15,20 @@ import { FormDataService } from '../../../core/services/form.data.service';
 export class AuctionCreateComponent implements OnInit {
   auctionForm: FormGroup = new FormGroup({});
   imageUrls: File[] = [];
+  id: string | null = '';
   constructor(
     private formBuilder: FormBuilder,
-    private readonly httpClient: HttpClient) { }
+    private readonly httpClient: HttpClient,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.buildForm();
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id) {
+      this.httpClient.get<AuctionDto>(environment.apiUrl + 'auctions/' + this.id).subscribe((response: AuctionDto) => {
+        this.auctionForm.patchValue(response);
+      });
+    }
   }
 
   buildForm(): void {
@@ -41,12 +51,15 @@ export class AuctionCreateComponent implements OnInit {
 
   onSubmit(): void {
     if (this.auctionForm.valid) {
-      debugger;
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
       formData.imageUrls = this.imageUrls;
       const data = FormDataService.objectToFormData(formData);
-      this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
+      if (this.id) {
+        this.httpClient.put(environment.apiUrl + 'auctions/' + this.id, data).subscribe((response: any) => { });
+      } else {
+        this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
+      }
     } else {
       // Handle form validation errors
     }
