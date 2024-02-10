@@ -1,12 +1,12 @@
-import {Component, ElementRef, HostListener} from '@angular/core';
-import {AccountService} from "../../../core/services/account.service";
-import {Router, RouterLink} from "@angular/router";
-import {AsyncPipe, NgIf} from "@angular/common";
-import {AvatarComponent} from "../avatar/avatar.component";
-import {MatFormField, MatInput, MatLabel} from "@angular/material/input";
-import {MatButton} from "@angular/material/button";
-import {MatDialog} from "@angular/material/dialog";
-import {LoginComponent} from "../modals/login/login.component";
+import { Component, ElementRef, HostListener } from '@angular/core';
+import { AccountService } from "../../../core/services/account.service";
+import { Router, RouterLink } from "@angular/router";
+import { AsyncPipe, NgIf } from "@angular/common";
+import { AvatarComponent } from "../avatar/avatar.component";
+import { MatFormField, MatInput, MatLabel } from "@angular/material/input";
+import { MatButton } from "@angular/material/button";
+import { MatDialog } from "@angular/material/dialog";
+import { LoginComponent } from "../modals/login/login.component";
 
 @Component({
   selector: 'app-header',
@@ -32,9 +32,9 @@ export class HeaderComponent {
 
 
   constructor(public accountService: AccountService,
-              private el: ElementRef,
-              private router: Router,
-              public dialog: MatDialog) {
+    private el: ElementRef,
+    private router: Router,
+    public dialog: MatDialog) {
 
   }
 
@@ -55,6 +55,7 @@ export class HeaderComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
+      this.closeLoginModal();
     });
   }
 
@@ -71,6 +72,7 @@ export class HeaderComponent {
   }
 
   public logout() {
+    this.accountService.logout();
     this.router.navigateByUrl('/home');
   }
 
@@ -82,5 +84,9 @@ export class HeaderComponent {
   public toLogin() {
     this.closeRegisterModal();
     this.openLoginModal();
+  }
+
+  public truncateText(text: string): string {
+    return text.length > 7 ? text.substring(0, 7) + '...' : text;
   }
 }
