@@ -1,7 +1,7 @@
 <mat-card [ngClass]="{'selected': selected}" *ngIf="auction" class="book-card" (mouseenter)="menuVisible = true"
-          (mouseleave)="menuOpen ? menuVisible = true : menuVisible = false">
+  (mouseleave)="menuOpen ? menuVisible = true : menuVisible = false">
   <mat-card-header class="header">
-    <mat-card-title>{{auction?.name}}</mat-card-title>
+    <mat-card-title>{{auction.name}}</mat-card-title>
     <mat-card-subtitle>Score {{auction.score}}</mat-card-subtitle>
 
   </mat-card-header>

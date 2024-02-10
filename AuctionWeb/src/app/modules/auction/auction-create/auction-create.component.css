@@ -1,0 +1,57 @@
+:host {
+  display: block;
+}
+.input-column {
+  padding: 25px;
+  padding-bottom: 3px;
+}
+
+.image-upload-container input {
+  display: none;
+}
+
+.image-upload-container {
+  cursor: pointer;
+}
+
+.img-preview {
+  background: center center no-repeat;
+  background-size: contain;
+  width: 189px;
+
+  &-error {
+      display: none;
+  }
+}
+
+.img-preview img {
+  width: 100%;
+}
+
+.btn-bwm {
+  background-color: #ffca49;
+  border-color: #ffca49;
+  color: black;
+  font-weight: 500;
+  padding: 5px 20px;
+  font-size: 20px;
+
+  &:hover,
+  &:focus,
+  &:active {
+      opacity: 0.9;
+  }
+}
+
+.central-info-column {
+  border-right: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+}
+
+.mat-step-btn {
+  margin-right: 40px;
+}
+
+.input-label {
+  margin-left: 20px;
+}

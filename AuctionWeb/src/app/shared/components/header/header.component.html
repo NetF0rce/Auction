@@ -1,18 +1,19 @@
 <header class="header">
   <div class="container">
-    <a routerLink="/home"><h1 class="logo">BuyDuck</h1></a>
+    <a routerLink="/home">
+      <h1 class="logo">BuyDuck</h1>
+    </a>
     <nav class="navigation">
-      <a routerLink="/home" class="nav-link">Auctions</a>
+      <a routerLink="/auctions" class="nav-link">Auctions</a>
       <a routerLink="/films" class="nav-link">My list</a>
       <a *ngIf="(accountService.currentUser$ | async)" routerLink="/list" class="nav-link">My
-        list</a>
+        list
+      </a>
       <a routerLink="/admin" class="nav-link">Admin</a>
     </nav>
   </div>
   <div class="user-sector">
-    <button mat-raised-button color="primary"
-      *ngIf="!(accountService.currentUser$ | async)"
-            (click)="openLoginModal()">
+    <button mat-raised-button color="primary" *ngIf="!(accountService.currentUser$ | async)" (click)="openLoginModal()">
       Log in
     </button>
     <div *ngIf="(accountService.currentUser$ | async) as user">

@@ -2,13 +2,16 @@ import { NgModule } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AppRoutingModule } from './app.routes';
 import { AppComponent } from "./app.component";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "./shared/shared.module";
 import { CoreModule } from "./core/core.module";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 import { AuthModule } from './modules/auth/auth.module';
-import {HeaderComponent} from "./shared/components/header/header.component";
+import { HeaderComponent } from "./shared/components/header/header.component";
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './core/services/token.interceptor';
+import { AuctionModule } from './modules/auction/auction.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import {HeaderComponent} from "./shared/components/header/header.component";
     CoreModule,
     AuthModule,
     HeaderComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AuctionModule
   ],
   providers: [
     provideAnimationsAsync(),
@@ -38,6 +42,11 @@ import {HeaderComponent} from "./shared/components/header/header.component";
         ]
       } as SocialAuthServiceConfig,
     },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
