@@ -4,21 +4,30 @@ import { environment } from '../../../../environments/environment';
 import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuctionDto } from '../../../models/Auction/auction-dto';
 
 @Component({
-  selector: 'auction-create',
-  templateUrl: './auction-create.component.html',
+  selector: 'auction-edit',
+  templateUrl: './auction-edit.component.html',
   styleUrl: './auction-create.component.css',
 })
-export class AuctionCreateComponent implements OnInit {
+export class AuctionEditComponent implements OnInit {
   auctionForm: FormGroup = new FormGroup({});
+
   imageUrls: File[] = [];
   constructor(
     private formBuilder: FormBuilder,
-    private readonly httpClient: HttpClient) { }
+    private readonly httpClient: HttpClient,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.buildForm();
+    const id = this.route.snapshot.paramMap.get('id');
+    this.httpClient.get<AuctionDto>(environment.apiUrl + 'auctions/' + id).subscribe((response: AuctionDto) => {
+      this.auctionForm.patchValue(response);
+    });
+
   }
 
   buildForm(): void {

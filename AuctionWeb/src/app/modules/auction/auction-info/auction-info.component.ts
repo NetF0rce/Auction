@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { AuctionDto } from "../../../models/Auction/auction-dto";
 
 @Component({
@@ -7,9 +7,13 @@ import { AuctionDto } from "../../../models/Auction/auction-dto";
   styleUrl: './auction-info.component.scss'
 })
 export class AuctionInfoComponent {
-  @Input() auction?: AuctionDto;
-  @Input() selected?: boolean;
+  // @Input() auction?: AuctionDto;
+  // @Input() selected?: boolean;
 
   public menuVisible = false;
   public menuOpen = false;
+  @HostListener("click") onClick() {
+    console.log("User Click using Host Listener")
+  }
+
 }
