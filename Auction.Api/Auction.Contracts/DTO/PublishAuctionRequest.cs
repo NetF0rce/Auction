@@ -12,7 +12,7 @@ public class PublishAuctionRequest
     public string Description { get; set; }
 
     [Required]
-    public TimeSpan FinishInterval { get; set; }
+    public long FinishIntervalTicks { get; set; }
 
     [Required]
     public decimal StartPrice { get; set; }

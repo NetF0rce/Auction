@@ -1,9 +1,9 @@
 ﻿using Auction.Contracts.DTO;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
+using Auction.Core.Interfaces.Images;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
-using Auction.Domain.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +11,12 @@ namespace Auction.Core.Services.Auctions;
 
 public class AuctionsVerificationService : BaseService, IAuctionsVerificationService
 {
-    public AuctionsVerificationService(IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IImagesService _imagesService;
+
+    public AuctionsVerificationService(IUnitOfWork unitOfWork, IMapper mapper, IImagesService imagesService)
         : base(unitOfWork, mapper)
     {
+        _imagesService = imagesService;
     }
 
     public async Task ApproveAuctionAsync(long id)
@@ -82,6 +85,11 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         if (auction == null || auction.Status != Domain.Enums.AuctionStatus.NotApproved)
         {
             throw new KeyNotFoundException("Not approved auction with such id does not exist.");
+        }
+
+        foreach(var image in auction.Images)
+        {
+            await _imagesService.DeleteImageAsync(image.PublicId);
         }
 
         await UnitOfWork.AuctionsRepository.DeleteByIdAsync(request.AuctionId);

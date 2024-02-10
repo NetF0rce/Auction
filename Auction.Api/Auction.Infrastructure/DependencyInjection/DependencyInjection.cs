@@ -21,7 +21,8 @@ public static class DependencyInjection
         services.AddScoped<IAuctionsRepository, AuctionsRepository>();
         services.AddScoped<IBidsRepository, BidsRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
-        
+        services.AddScoped<IAuctionImagesRepository,AuctionImagesRepository>();
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

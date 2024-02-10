@@ -1,6 +1,7 @@
 ﻿using Auction.Contracts.DTO;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
+using Auction.Core.Interfaces.Images;
 using Auction.Core.Interfaces.UserAccessor;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
@@ -13,11 +14,13 @@ namespace Auction.Core.Services.Auctions;
 public class AuctionsService : BaseService, IAuctionsService
 {
     private readonly IUserAccessor _userAccessor;
+    private readonly IImagesService _imagesService;
 
-    public AuctionsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccessor userAccessor)
+    public AuctionsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccessor userAccessor, IImagesService imagesService)
         : base(unitOfWork, mapper)
     {
         _userAccessor = userAccessor;
+        _imagesService = imagesService;
     }
 
     public async Task CancelAuctionAsync(long id)
@@ -189,12 +192,25 @@ public class AuctionsService : BaseService, IAuctionsService
     {
         ArgumentNullException.ThrowIfNull(auction);
 
-        // TODO: add images to Cloudinary
-
         var auctionToInsert = Mapper.Map<Domain.Entities.Auction>(auction);
         auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
+        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishIntervalTicks);
 
         await UnitOfWork.AuctionsRepository.AddAsync(auctionToInsert!);
+
+        foreach (var image in auction.Images)
+        {
+            var uploadResult = await _imagesService.AddImageAsync(image);
+
+            var auctionImage = new AuctionImage
+            {
+                AuctionId = auctionToInsert.Id,
+                Url = uploadResult.Url.AbsoluteUri,
+                PublicId = uploadResult.PublicId,
+            };
+
+            await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
+        }
 
         // TODO: inform auctionist
     }
