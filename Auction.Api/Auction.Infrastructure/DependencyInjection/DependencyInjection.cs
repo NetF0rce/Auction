@@ -13,13 +13,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
+        services.AddScoped<IScoreRepository,ScoreRepository>();
         services.AddScoped<ICommentsRepository, CommentsRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IAuctionsRepository, AuctionsRepository>();
         services.AddScoped<IBidsRepository, BidsRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBidsRepository, BidsRepository>();
-        
+        services.AddScoped<IAuctionImagesRepository,AuctionImagesRepository>();
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
