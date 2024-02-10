@@ -4,6 +4,6 @@ namespace Auction.Core.Interfaces.Profile;
 
 public interface IProfileService
 {
-    Task<ProfileResponse> GetProfile(long userId);
+    Task<ProfileResponse> GetProfile();
     Task<ProfileResponse> UpdateProfile(ProfileUpdateRequest profileUpdateRequest);
 }
