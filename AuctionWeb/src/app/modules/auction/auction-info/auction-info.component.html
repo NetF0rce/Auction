@@ -1,16 +1,20 @@
-<mat-card [ngClass]="{'selected': selected}" *ngIf="auction" class="book-card" (mouseenter)="menuVisible = true"
+<mat-card class="book-card" (mouseenter)="menuVisible = true"
   (mouseleave)="menuOpen ? menuVisible = true : menuVisible = false">
   <mat-card-header class="header">
-    <mat-card-title>{{auction.name}}</mat-card-title>
-    <mat-card-subtitle>Score {{auction.score}}</mat-card-subtitle>
+    <!-- <mat-card-title>{{auction.name}}</mat-card-title> -->
+    <mat-card-title>Name</mat-card-title>
+    <!-- <mat-card-subtitle>Score {{auction.score}}</mat-card-subtitle> -->
+    <mat-card-subtitle>Score 123</mat-card-subtitle>
 
   </mat-card-header>
   <mat-card-content>
     <div class="description">
-      <p>{{auction.description}}</p>
+      <!-- <p>{{auction.description}}</p> -->
+      <p>description</p>
     </div>
   </mat-card-content>
   <mat-card-actions align="end">
-    <mat-card-subtitle>{{auction.endDateTime | date:'mediumDate'}}</mat-card-subtitle>
+    <!-- <mat-card-subtitle>{{auction.endDateTime | date:'mediumDate'}}</mat-card-subtitle> -->
+    <mat-card-subtitle>end date time</mat-card-subtitle>
   </mat-card-actions>
 </mat-card>

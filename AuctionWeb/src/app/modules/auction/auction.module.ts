@@ -6,13 +6,15 @@ import { AuctionListComponent } from './auction-list/auction-list.component';
 import { MaterialModule } from '../../material/material.module';
 import { AuctionInfoComponent } from './auction-info/auction-info.component';
 import { AuctionCreateComponent } from './auction-create/auction-create.component';
+import { AuctionEditComponent } from './auction-edit/auction-edit.component';
 
 
 @NgModule({
   declarations: [
     AuctionListComponent,
     AuctionInfoComponent,
-    AuctionCreateComponent
+    AuctionCreateComponent,
+    AuctionEditComponent
   ],
   imports: [
     CommonModule,

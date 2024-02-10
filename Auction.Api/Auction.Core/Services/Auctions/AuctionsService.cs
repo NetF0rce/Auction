@@ -23,6 +23,8 @@ public class AuctionsService : BaseService, IAuctionsService
         _imagesService = imagesService;
     }
 
+    
+
     public async Task CancelAuctionAsync(long id)
     {
         var auction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
@@ -213,6 +215,22 @@ public class AuctionsService : BaseService, IAuctionsService
         }
 
         // TODO: inform auctionist
+    }
+    
+    public async Task EditAuctionAsync(long id, EditAuctionRequest auction)
+    {
+        ArgumentNullException.ThrowIfNull(auction);
+        var isExists = await UnitOfWork.AuctionsRepository.IsExistAsync(id);
+        if (!isExists)
+        {
+            throw new KeyNotFoundException("Auction with such id does not exist.");
+        }
+        
+        var auctionToEdit = Mapper.Map<Domain.Entities.Auction>(auction);
+        var currentAuction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
+        var currentAuctionist = _userAccessor.GetCurrentUserId();
+        
+        
     }
 
     public async Task RecoverAuctionAsync(long id)
