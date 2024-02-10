@@ -1,29 +1,49 @@
 <header class="header">
-  <div class="container">
+      <div class="container d-flex justify-content-start mx-0">
     <a routerLink="/home">
       <h1 class="logo">BuyDuck</h1>
     </a>
-    <nav class="navigation">
-      <a routerLink="/auctions" class="nav-link">Auctions</a>
-      <a routerLink="/films" class="nav-link">My list</a>
-      <a *ngIf="(accountService.currentUser$ | async)" routerLink="/list" class="nav-link">My
-        list
-      </a>
-      <a routerLink="/admin" class="nav-link">Admin</a>
+    <nav class="navigation d-flex">
+      <a routerLink="/auctions"
+         class="nav-link">Auctions</a>
+      <a routerLink="/films"
+         class="nav-link">My list</a>
+      <a *ngIf="(accountService.currentUser$ | async)"
+         routerLink="/list"
+         class="nav-link">Profile</a>
+      <a routerLink="/admin"
+         class="nav-link">Admin</a>
     </nav>
   </div>
   <div class="user-sector">
-    <button mat-raised-button color="primary" *ngIf="!(accountService.currentUser$ | async)" (click)="openLoginModal()">
+    <button mat-raised-button
+            color="primary"
+            *ngIf="!(accountService.currentUser$ | async)"
+            (click)="openLoginModal()">
       Log in
     </button>
     <div *ngIf="(accountService.currentUser$ | async) as user">
-      <button (click)="toggleDropdown()">
-        <app-avatar [name]="user.userDto.username" [photoUrl]="user.userDto.imageUrl" [size]="40"></app-avatar>
-        {{ user.userDto.username }}
+      <button mat-raised-button
+              color="primary"
+              (click)="toggleDropdown()">
+        <div class="d-flex align-content-center">
+          <app-avatar [name]="user.userDto.username"
+                      [photoUrl]="user.userDto.imageUrl"
+                      [size]="28"></app-avatar>
+          <div class="my-auto profile-option-btn">
+            {{truncateText(user.userDto.username)}}
+          </div>
+
+        </div>
+
       </button>
-      <div *ngIf="showDropdown" class="dropdown">
-        <a routerLink="/profile" class="dropdown-link" (click)="toggleDropdown()">Profile</a>
-        <a class="dropdown-link-danger" (click)="logout()">Log out</a>
+      <div *ngIf="showDropdown"
+           class="dropdown">
+        <a routerLink="/profile"
+           class="dropdown-link"
+           (click)="toggleDropdown()">Profile</a>
+        <a class="dropdown-link-danger"
+           (click)="logout()">Log out</a>
       </div>
     </div>
   </div>

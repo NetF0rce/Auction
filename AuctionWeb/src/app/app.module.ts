@@ -23,7 +23,6 @@ import { AuctionModule } from './modules/auction/auction.module';
     RouterOutlet,
     FormsModule,
     CoreModule,
-    AuthModule,
     HeaderComponent,
     ReactiveFormsModule,
     AuctionModule
