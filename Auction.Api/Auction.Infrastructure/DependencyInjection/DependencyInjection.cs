@@ -1,8 +1,6 @@
 ﻿using System.Text;
-using Auction.Core.Interfaces.Comments;
 using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Users;
-using Auction.Domain.Entities;
 using Auction.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<IAuctionsRepository, AuctionsRepository>();
         services.AddScoped<IBidsRepository, BidsRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IBidsRepository, BidsRepository>();
         
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

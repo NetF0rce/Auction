@@ -2,7 +2,6 @@
 using Auction.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Extensions;
 using IAuthorizationService = Auction.Core.Interfaces.Authorization.IAuthorizationService;
 
 namespace Auction.Api.Controllers;
