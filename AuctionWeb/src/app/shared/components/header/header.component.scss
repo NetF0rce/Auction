@@ -32,6 +32,7 @@ a {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
   padding: 8px 12px;
+
   &:hover {
     --tw-text-opacity: 1;
     color: rgb(209 213 219 / var(--tw-text-opacity));
@@ -58,6 +59,7 @@ a {
   display: block;
   color: white;
   padding: 4px 12px;
+
   &:hover {
     color: rgb(209 213 219 / var(--tw-text-opacity));
   }
@@ -68,6 +70,7 @@ a {
   color: red;
   padding: 4px 12px;
   cursor: pointer;
+
   &:hover {
     color: darken(red, 20);
   }
@@ -81,4 +84,13 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.profile-btn {
+  border: none;
+  background: transparent;
+}
+
+.profile-option-btn {
+  padding-left: 8px;
 }
