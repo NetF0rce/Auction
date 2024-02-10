@@ -55,6 +55,7 @@ export class HeaderComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
+      this.closeLoginModal();
     });
   }
 

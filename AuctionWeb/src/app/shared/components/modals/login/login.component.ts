@@ -7,7 +7,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { RegisterComponent } from "../register/register.component";
 import { ValidationsFn } from "../../../helpers/validations";
 import { AccountService } from "../../../../core/services/account.service";
-import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-login',
@@ -33,10 +33,17 @@ export class LoginComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<LoginComponent>,
     private dialog: MatDialog,
     private fb: FormBuilder,
-    private accountService: AccountService) { }
+    private accountService: AccountService,
+    private socialAuthService: SocialAuthService) { }
 
   public ngOnInit(): void {
     this.initializeForm();
+    this.socialAuthService.authState
+      .subscribe((user: SocialUser) => {
+        if (user) {
+          this.dialogRef.close();
+        }
+      });
   }
 
   public onCancel(): void {
