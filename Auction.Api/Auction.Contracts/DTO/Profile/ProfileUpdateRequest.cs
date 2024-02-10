@@ -5,12 +5,13 @@ namespace Auction.Contracts.DTO.Profile;
 
 public class ProfileUpdateRequest
 {
-    [Required]
-    public Guid Id { get; set; }
-    [MinLength(2)]
-    [MaxLength(25)]
-    [Required]
+    [MaxLength(30)]
     public string? FullName { get; set; }
+
+    [MaxLength(30)]
+    public string Username { get; set; }
+    
     private DateOnly? DateOfBirth { get; set; }
+    
     public IFormFile? Image { get; set; }
 }
