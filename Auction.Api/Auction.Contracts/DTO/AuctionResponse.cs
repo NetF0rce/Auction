@@ -10,6 +10,8 @@ public class AuctionResponse
     public string Description { get; set; }
     public List<ImageDto> Images { get; set; }
     public double Score { get; set; }
+    public long FinishInterval { get; set; }
+    public decimal StartPrice { get; set; } 
     public DateTime? StartDateTime { get; set; }
     public DateTime? EndDateTime { get; set; }
     public long AuctionistUserId { get; set; }

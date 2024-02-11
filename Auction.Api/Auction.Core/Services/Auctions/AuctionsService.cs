@@ -140,11 +140,22 @@ public class AuctionsService : BaseService, IAuctionsService
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
 
-        var response = Mapper.Map<AuctionResponse>(auction);
-        response!.Score = auction.Scores.Average(x => x.Score);
-        response.Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url }).ToList();
-        response.AuctionistUserId = auction.AuctionistId;
-        response.AuctionistUsername = auction.Auctionist.Username;
+        var response = new AuctionResponse()
+        {
+            Name = auction.Name,
+            Description = auction.Description,
+            Id = auction.Id,
+            Status = auction.Status,
+            StartDateTime = auction.StartDateTime,
+            Score = auction.Scores.Any() ? auction.Scores.Average(score => score.Score) : 0,
+            IsPaied = auction.IsPaid,
+            Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url }).ToList(),
+            AuctionistUserId = auction.AuctionistId,
+            AuctionistUsername = auction.Auctionist.Username,
+            EndDateTime = auction.FinishDateTime,
+            StartPrice = auction.StartPrice,
+            FinishInterval = auction.FinishInterval.Hours
+        };
 
         return response;
     }
@@ -171,23 +182,23 @@ public class AuctionsService : BaseService, IAuctionsService
             Data = auctions
                 .Select(x =>
                 {
-                    var response = Mapper.Map<AuctionResponse>(x);
-                    if (x.Scores != null)
+                    var response = new AuctionResponse()
                     {
-                        response.Score = x.Scores.Average(x => x.Score);
-                    }
-
-                    if (x.Images != null)
-                    {
-                        response.Images = x.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url })
-                            .ToList();
-                    }
-
-                    response.AuctionistUserId = x.AuctionistId;
-                    if (x.Auctionist != null)
-                    {
-                        response.AuctionistUsername = x.Auctionist.Username;
-                    }
+                        Name = x.Name,
+                        Description = x.Description,
+                        Id = x.Id,
+                        Status = x.Status,
+                        StartDateTime = x.StartDateTime,
+                        Score = x.Scores.Any() ? x.Scores.Average(score => score.Score) : 0,
+                        IsPaied = x.IsPaid,
+                        Images =
+                            x.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url }).ToList(),
+                        AuctionistUserId = x.AuctionistId,
+                        AuctionistUsername = x.Auctionist.Username,
+                        EndDateTime = x.FinishDateTime,
+                        StartPrice = x.StartPrice,
+                        FinishInterval = x.FinishInterval.Hours
+                    };
 
                     return response;
                 })
@@ -199,7 +210,7 @@ public class AuctionsService : BaseService, IAuctionsService
         return listModel;
     }
 
-    public async Task<AuctionResponse> PublishAuctionAsync(PublishAuctionRequest auction)
+    public async Task PublishAuctionAsync(PublishAuctionRequest auction)
     {
         ArgumentNullException.ThrowIfNull(auction);
 
@@ -232,8 +243,6 @@ public class AuctionsService : BaseService, IAuctionsService
             await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
             createdAuction.Images.Add(auctionImage);
         }
-
-        return Mapper.Map<AuctionResponse>(createdAuction)!;
     }
 
     public async Task EditAuctionAsync(long id, EditAuctionRequest auction)
@@ -254,15 +263,19 @@ public class AuctionsService : BaseService, IAuctionsService
         existentAuction.Name = auction.Name;
         existentAuction.Description = auction.Description;
         existentAuction.StartPrice = auction.StartPrice;
-        existentAuction.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
+        existentAuction.FinishInterval = TimeSpan.FromHours(auction.FinishInterval);
         existentAuction.FinishDateTime = existentAuction.StartDateTime.Add(existentAuction.FinishInterval);
-        var photosToDelete = existentAuction.Images.Select(image => new { image.PublicId, image.Id })
-            .Where(im => !auction.OldImages.Contains(im.PublicId));
 
-        foreach (var photo in photosToDelete)
+        if (auction.OldImages is not null)
         {
-            await _imagesService.DeleteImageAsync(photo.PublicId);
-            await UnitOfWork.AuctionImagesRepository.DeleteByIdAsync(photo.Id);
+            var photosToDelete = existentAuction.Images.Select(image => new { image.PublicId, image.Id })
+                .Where(im => !auction.OldImages?.Contains(im.PublicId) ?? false);
+
+            foreach (var photo in photosToDelete)
+            {
+                await _imagesService.DeleteImageAsync(photo.PublicId);
+                await UnitOfWork.AuctionImagesRepository.DeleteByIdAsync(photo.Id);
+            }
         }
 
         foreach (var image in auction.Images)
@@ -348,6 +361,11 @@ public class AuctionsService : BaseService, IAuctionsService
             specificationBuilder.With(x =>
                 x.Status != Domain.Enums.AuctionStatus.Canceled && x.Status != Domain.Enums.AuctionStatus.NotApproved);
         }
+
+        specificationBuilder.WithInclude(
+            x => x.Include(a => a.Images)
+                .Include(a => a.Scores)
+                .Include(a => a.Auctionist));
 
         specificationBuilder.WithPagination(filters.PageSize, filters.PageNumber);
 

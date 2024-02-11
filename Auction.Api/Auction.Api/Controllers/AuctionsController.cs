@@ -34,30 +34,30 @@ namespace Auction.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult<AuctionResponse>> PublishAuction([FromForm] PublishAuctionRequest request)
+        public async Task<ActionResult> PublishAuction([FromForm] PublishAuctionRequest request)
         {
-            var auction = await _auctionsService.PublishAuctionAsync(request);
-
-            return Ok(auction);
+            await _auctionsService.PublishAuctionAsync(request);
+            
+            return Ok();
         }
         
         [HttpPut("{id}")]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> UpdateAuction([FromRoute] long id, [FromBody]EditAuctionRequest request)
+        public async Task<ActionResult> UpdateAuction([FromRoute] long id, [FromForm]EditAuctionRequest request)
         {
             await _auctionsService.EditAuctionAsync(id, request);
 
             return Ok(new { Message = "Auction has been successfully updated." });
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> ConfirmPayment([FromRoute] long id)
-        {
-            await _auctionsService.ConfirmPaymentForAuctionAsync(id);
-
-            return Ok(new { Message = "Payment has been successfully confirmed." });
-        }
+        // [HttpPut("{id}")]
+        // [Authorize(Roles = "Customer")]
+        // public async Task<ActionResult> ConfirmPayment([FromRoute] long id)
+        // {
+        //     await _auctionsService.ConfirmPaymentForAuctionAsync(id);
+        //
+        //     return Ok(new { Message = "Payment has been successfully confirmed." });
+        // }
 
         [HttpPut("{id}/cancel")]
         [Authorize(Roles = "Admin")]

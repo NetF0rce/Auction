@@ -1,8 +1,8 @@
-import {Injectable} from "@angular/core";
-import {AuctionDto} from "../../models/auction/auction-dto";
-import {environment} from "../../../environments/environment";
-import {HttpInternalService} from "./http-internal.service";
-import {MyResponse} from "../../models/common/response.model";
+import { Injectable } from "@angular/core";
+import { environment } from "../../../environments/environment";
+import { HttpInternalService } from "./http-internal.service";
+import { MyResponse } from "../../models/common/response.model";
+import { AuctionDto } from "../../models/auction/auction-dto";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class AuctionService {
   constructor(private readonly httpClient: HttpInternalService) {
   }
 
-  public getAuctions(){
+  public getAuctions() {
     return this.httpClient.getRequest<MyResponse<AuctionDto>>(environment.apiUrl + 'auctions');
   }
 

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
 import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { AuctionService } from '../../../core/services/auction.service';
 import { ToastrService } from 'ngx-toastr';
+import { AuctionDto } from '../../../models/auction/auction-dto';
 
 @Component({
   selector: 'auction-create',
@@ -43,7 +43,6 @@ export class AuctionCreateComponent implements OnInit {
     return this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      imageUrls: [[]],
       startPrice: [null, [Validators.required, Validators.min(0)]],
       finishInterval: [null, [Validators.required, Validators.min(0)]]
     });
@@ -71,51 +70,45 @@ export class AuctionCreateComponent implements OnInit {
     if (this.auctionForm.valid) {
       const formData: AuctionCreate = this.auctionForm.value;
 
-      if (this.images.length == 0) {
-        this.toastr.error("You have to insert photo")
 
-        const data = FormDataService.objectToFormData(formData);
-        let images = this.images.map(im => im.image)
-        data.delete("images");
+      const data = FormDataService.objectToFormData(formData);
+      var images = this.images.filter(image => !image.id).map(im => im.image)
+      data.delete("images");
 
-        for (let i = 0; i < images.length; i++) {
-          const file = images[i];
-          if (file){
-            data.append('images', file);
-          }
+      for (var i = 0; i < this.images.length; i++) {
+
+        if (this.images[i].publicId) {
+          const id = this.images[i].publicId;
+          if (id !== undefined && id !== null)
+            data.append(`oldPhotos`, id);
         }
 
-        for (let i = 0; i < this.oldImages.length; i++) {
-          data.append('oldImages', this.oldImages[i]);
+        const image = this.images[i].image
+        if (image !== undefined)
+          data.append('images', image);
+      }
+
+      if (this.id) {
+        this.auctionService.editAuction(this.id, data).subscribe(
+          {
+            next: val => this.router.navigate(["/auctions"])
+          }
+        );
+      }
+      else {
+        if (this.images.length == 0) {
+          this.toastr.error("You have to insert photo")
         }
 
-        if (this.id) {
-          this.auctionService.editAuction(this.id, data).subscribe();
-        } else {
-          const data = FormDataService.objectToFormData(formData);
-          data.delete("images");
-          for (let i = 0; i < this.images.length; i++) {
-
-            if (this.images[i].publicId) {
-              data.append("oldPhotos", this.images[i].publicId as string)
-            }
-
-            if (this.images[i].image) {
-              data.append('images', this.images[i].image as File);
-            }
+        this.auctionService.createAuction(data).subscribe(
+          {
+            next: val => this.router.navigate(["/auctions"])
           }
-
-          if (this.id) {
-            this.auctionService.editAuction(this.id, data).subscribe();
-          } else {
-            this.auctionService.createAuction(data).subscribe();
-          }
-
-          this.router.navigate(["/auctions"]);
-        }
+        );
       }
     }
   }
+
 
   dropPhoto(index: number) {
 
