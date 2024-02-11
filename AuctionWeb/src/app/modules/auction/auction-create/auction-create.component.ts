@@ -19,6 +19,7 @@ export class AuctionCreateComponent implements OnInit {
   actionEditId: string | undefined;
   id: string | undefined | null;
   images: Image[] = [];
+  oldImages: string[] = []
 
   constructor(
     private formBuilder: FormBuilder,
@@ -32,6 +33,8 @@ export class AuctionCreateComponent implements OnInit {
     if (this.id) {
       this.auctionService.getAuctionById(this.id).subscribe((response: AuctionDto) => {
         this.auctionForm.patchValue(response);
+        this.images = response.images;
+        this.oldImages = this.images.map(im => im.id as string);
       });
     }
   }
@@ -56,7 +59,7 @@ export class AuctionCreateComponent implements OnInit {
           this.images.push({
             imageUrl: e.target?.result,
             image: imageInput
-          });
+          } as Image);
         };
         img.src = URL.createObjectURL(imageInput);
       };
@@ -71,8 +74,13 @@ export class AuctionCreateComponent implements OnInit {
       const data = FormDataService.objectToFormData(formData);
       var images = this.images.map(im => im.image)
       data.delete("images");
+
       for (var i = 0; i < images.length; i++) {
         data.append('images', images[i]);
+      }
+
+      for (var i = 0; i < this.oldImages.length; i++) {
+        data.append('oldImages', this.oldImages[i]);
       }
 
       if (this.id) {
@@ -90,6 +98,11 @@ export class AuctionCreateComponent implements OnInit {
   }
 
   dropPhoto(index: number) {
+
+    if (this.images[index].id) {
+      this.oldImages = this.oldImages.filter(id => id != this.images[index].id);
+    }
+
     this.images.splice(index, 1);
   }
 }
