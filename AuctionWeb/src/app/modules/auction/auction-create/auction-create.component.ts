@@ -5,6 +5,11 @@ import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { Image } from '../../../models/Images/image';
+<<<<<<< Updated upstream
+=======
+import { AuctionCreate } from '../../../models/Auction/auction-create';
+import { AuctionService } from '../../../core/services/auction.service';
+>>>>>>> Stashed changes
 
 @Component({
   selector: 'auction-create',
@@ -12,23 +17,31 @@ import { Image } from '../../../models/Images/image';
   styleUrl: './auction-create.component.scss',
 })
 export class AuctionCreateComponent implements OnInit {
-  auctionForm: FormGroup = this.formBuilder.group({
-    name: ['', Validators.required],
-    description: ['', Validators.required],
-    imageUrls: [[]],
-    startPrice: [0, Validators.required],
-    finishIntervalTicks: [0, Validators.required]
-  });
+  auctionForm: FormGroup = this.buildForm();
   actionEditId: string | undefined;
   images: Image[] = [];
 
 
   constructor(
     private formBuilder: FormBuilder,
+<<<<<<< Updated upstream
     private readonly httpClient: HttpClient) { }
 
   ngOnInit(): void {
     this.buildForm();
+=======
+    private route: ActivatedRoute,
+    private auctionService: AuctionService) { }
+
+  ngOnInit(): void {
+    this.buildForm();
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id) {
+      this.auctionService.getAuctionById(this.id).subscribe((response: AuctionDto) => {
+        this.auctionForm.patchValue(response);
+      });
+    }
+>>>>>>> Stashed changes
   }
 
   buildForm() {
@@ -37,7 +50,7 @@ export class AuctionCreateComponent implements OnInit {
       description: ['', Validators.required],
       imageUrls: [[]],
       startPrice: [0, Validators.required],
-      finishIntervalTicks: [0, Validators.required]
+      finishInterval: [0, Validators.required]
     });
   }
 
@@ -70,8 +83,20 @@ export class AuctionCreateComponent implements OnInit {
       for (var i = 0; i < images.length; i++) {
         data.append('images', images[i]);
       }
+<<<<<<< Updated upstream
       this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
     } else {
+=======
+
+      if (this.id) {
+        this.auctionService.editAuction(this.id, data).subscribe();
+      }
+      else {
+        this.auctionService.createAuction(data).subscribe();
+      }
+    }
+    else {
+>>>>>>> Stashed changes
       // Handle form validation errors
     }
   }

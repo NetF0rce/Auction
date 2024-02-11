@@ -10,6 +10,13 @@ const routes: Routes = [
   },
   {
     path: 'create',
+<<<<<<< Updated upstream
+=======
+    component: AuctionCreateComponent
+  },
+  {
+    path: 'edit/:id',
+>>>>>>> Stashed changes
     component: AuctionCreateComponent
   }
 ];
