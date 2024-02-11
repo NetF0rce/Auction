@@ -41,6 +41,15 @@ namespace Auction.Api.Controllers
 
             return Ok(new { Message = "Auction has been successfully published." });
         }
+        
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult> UpdateAuction([FromRoute] long id, [FromBody]EditAuctionRequest request)
+        {
+            await _auctionsService.EditAuctionAsync(id, request);
+
+            return Ok(new { Message = "Auction has been successfully updated." });
+        }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Customer")]

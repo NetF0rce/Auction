@@ -6,7 +6,7 @@ public class BidResponse
     public long AuctionId { get; set; }
     public long BidderId { get; set; } 
     public DateTime DateAndTime { get; set; }
-    public decimal Amout { get; set; }
+    public decimal Amount { get; set; }
     public bool IsWinning { get; set; } 
     public string BidderName { get; set; }
 }

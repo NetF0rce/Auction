@@ -219,17 +219,20 @@ public class AuctionsService : BaseService, IAuctionsService
     public async Task EditAuctionAsync(long id, EditAuctionRequest auction)
     {
         ArgumentNullException.ThrowIfNull(auction);
-        var isExists = await UnitOfWork.AuctionsRepository.IsExistAsync(id);
-        if (!isExists)
+        var existentAuction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
+        if (existentAuction is null)
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
         
-        var auctionToEdit = Mapper.Map<Domain.Entities.Auction>(auction);
-        var currentAuction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
         var currentAuctionist = _userAccessor.GetCurrentUserId();
-        
-        
+        if (existentAuction.AuctionistId != currentAuctionist)
+        {
+            throw new InvalidOperationException("You are not the owner of this auction.");
+        }
+        Mapper.Map(auction, existentAuction);
+
+        await UnitOfWork.AuctionsRepository.UpdateAsync(existentAuction);
     }
 
     public async Task RecoverAuctionAsync(long id)

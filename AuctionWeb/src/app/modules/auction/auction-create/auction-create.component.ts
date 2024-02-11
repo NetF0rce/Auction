@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { AuctionCreate } from '../../../models/Auction/auction-create';
+import { AuctionCreate } from '../../../models/auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
 
 @Component({
@@ -22,13 +24,19 @@ export class AuctionCreateComponent implements OnInit {
   actionEditId: string | undefined;
   images: Image[] = [];
 
-
   constructor(
     private formBuilder: FormBuilder,
-    private readonly httpClient: HttpClient) { }
+    private readonly httpClient: HttpClient,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.buildForm();
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id !== 'undefined') {
+      this.httpClient.get<AuctionDto>(environment.apiUrl + 'auctions/' + this.id).subscribe((response: AuctionDto) => {
+        this.auctionForm.patchValue(response);
+      });
+    }
   }
 
   buildForm() {
@@ -64,6 +72,11 @@ export class AuctionCreateComponent implements OnInit {
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
       const data = FormDataService.objectToFormData(formData);
+      if (this.id !== 'undefined') {
+        this.httpClient.put(environment.apiUrl + 'auctions/' + this.id, data).subscribe((response: any) => { });
+      } else {
+        this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
+      }
       var images = this.images.map(im => im.image)
       data.delete("images");
 

@@ -11,6 +11,8 @@ import { HeaderComponent } from "./shared/components/header/header.component";
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './core/services/token.interceptor';
 import { AuctionModule } from './modules/auction/auction.module';
+import { ToastrModule } from 'ngx-toastr';
+import { ErrorInterceptor } from './core/services/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AuctionModule } from './modules/auction/auction.module';
     CoreModule,
     HeaderComponent,
     ReactiveFormsModule,
-    AuctionModule
+    AuctionModule,
+    ToastrModule.forRoot()
   ],
   providers: [
     provideAnimationsAsync(),
@@ -43,6 +46,11 @@ import { AuctionModule } from './modules/auction/auction.module';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
       multi: true
     }
   ],

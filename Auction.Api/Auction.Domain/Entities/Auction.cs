@@ -22,7 +22,7 @@ public class Auction : EntityBase
     public DateTime StartDateTime { get; set; }
 
     [AllowNull]
-    public DateTime FinishDateTime { get; set; }
+    public DateTime? FinishDateTime { get; set; }
 
     [Required]
     public TimeSpan FinishInterval { get; set; }
