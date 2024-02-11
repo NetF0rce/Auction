@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { AuctionCreate } from '../../../models/Auction/auction-create';
+import { AuctionCreate } from '../../../models/auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute } from '@angular/router';
-import { AuctionDto } from '../../../models/Auction/auction-dto';
+import { AuctionDto } from '../../../models/auction/auction-dto';
 
 @Component({
   selector: 'auction-create',
@@ -24,7 +24,7 @@ export class AuctionCreateComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.id = this.route.snapshot.paramMap.get('id');
-    if (this.id) {
+    if (this.id !== 'undefined') {
       this.httpClient.get<AuctionDto>(environment.apiUrl + 'auctions/' + this.id).subscribe((response: AuctionDto) => {
         this.auctionForm.patchValue(response);
       });
@@ -55,7 +55,7 @@ export class AuctionCreateComponent implements OnInit {
       console.log(formData);
       formData.imageUrls = this.imageUrls;
       const data = FormDataService.objectToFormData(formData);
-      if (this.id) {
+      if (this.id !== 'undefined') {
         this.httpClient.put(environment.apiUrl + 'auctions/' + this.id, data).subscribe((response: any) => { });
       } else {
         this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });

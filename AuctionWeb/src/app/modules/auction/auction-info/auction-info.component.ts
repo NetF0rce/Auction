@@ -1,5 +1,5 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { AuctionDto } from "../../../models/Auction/auction-dto";
+import { Component, Input, OnInit } from '@angular/core';
+import { AuctionDto } from "../../../models/auction/auction-dto";
 import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { take } from 'rxjs';
@@ -18,9 +18,6 @@ export class AuctionInfoComponent implements OnInit {
   public menuVisible = false;
   public menuOpen = false;
 
-  @HostListener("click") onClick() {
-    console.log("User Click using Host Listener")
-  }
 
   constructor(private router: Router,
     private accountService: AccountService) { }
@@ -35,6 +32,9 @@ export class AuctionInfoComponent implements OnInit {
     })
   }
   editAuction() {
-    this.router.navigate(['auctions', this.auction?.id]);
+    this.router.navigate(['auctions/' + this.auction?.id]);
+  }
+  viewAuction() {
+    this.router.navigate(['auctions/view/' + this.auction?.id]);
   }
 }

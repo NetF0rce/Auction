@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { AuctionDto } from '../../../models/Auction/auction-dto';
+import { AuctionDto } from '../../../models/auction/auction-dto';
 import { MyResponse } from '../../../models/common/response.model';
 
 @Component({
@@ -12,7 +12,7 @@ import { MyResponse } from '../../../models/common/response.model';
 export class AuctionListComponent implements OnInit {
   auctions: AuctionDto[] = [];
 
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(private readonly httpClient: HttpClient) { }
 
   ngOnInit(): void {
     this.getAuctions();
