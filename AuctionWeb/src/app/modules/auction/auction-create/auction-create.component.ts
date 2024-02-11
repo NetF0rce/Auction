@@ -68,14 +68,11 @@ export class AuctionCreateComponent implements OnInit {
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
       const data = FormDataService.objectToFormData(formData);
-      
-        var images = this.images.map(im => im.image)
-        data.delete("images");
-
-        for (var i = 0; i < images.length; i++) {
-          data.append('images', images[i]);
-        
-
+      var images = this.images.map(im => im.image)
+      data.delete("images");
+      for (var i = 0; i < images.length; i++) {
+        data.append('images', images[i]);
+      }
 
       if (this.id) {
         this.auctionService.editAuction(this.id, data).subscribe();
