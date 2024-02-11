@@ -192,7 +192,6 @@ public class AuctionsService : BaseService, IAuctionsService
             Status = AuctionStatus.NotApproved,
             Description = auction.Description,
             StartPrice = auction.StartPrice,
-            
         };
         auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
         auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
@@ -232,9 +231,32 @@ public class AuctionsService : BaseService, IAuctionsService
             throw new InvalidOperationException("You are not the owner of this auction.");
         }
         
-        var oldAuctionPhotos = 
+        existentAuction.Name = auction.Name;
+        existentAuction.Description = auction.Description;
+        existentAuction.StartPrice = auction.StartPrice;
+        existentAuction.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
+        existentAuction.FinishDateTime = existentAuction.StartDateTime.Add(existentAuction.FinishInterval);
+        var photosToDelete = existentAuction.Images.Select(image => new{image.PublicId, image.Id}).Where(im => !auction.OldImages.Contains(im.PublicId));
+
+        foreach (var photo in photosToDelete)
+        {
+            await _imagesService.DeleteImageAsync(photo.PublicId);
+            await UnitOfWork.AuctionImagesRepository.DeleteByIdAsync(photo.Id);
+        }
         
-        Mapper.Map(auction, existentAuction);
+        foreach (var image in auction.Images)
+        {
+            var uploadResult = await _imagesService.AddImageAsync(image);
+
+            var auctionImage = new AuctionImage
+            {
+                AuctionId = existentAuction.Id,
+                Url = uploadResult.Url.AbsoluteUri,
+                PublicId = uploadResult.PublicId,
+            };
+
+            await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
+        }
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(existentAuction);
     }
@@ -243,17 +265,17 @@ public class AuctionsService : BaseService, IAuctionsService
     {
         var auction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
 
-        if (auction == null || auction.Status == Domain.Enums.AuctionStatus.NotApproved)
+        if (auction == null || auction.Status == AuctionStatus.NotApproved)
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
 
-        if (auction.Status != Domain.Enums.AuctionStatus.Canceled)
+        if (auction.Status != AuctionStatus.Canceled)
         {
             throw new InvalidOperationException("Auction has not been canceled to recover.");
         }
 
-        auction.Status = Domain.Enums.AuctionStatus.Active;
+        auction.Status = AuctionStatus.Active;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
 
