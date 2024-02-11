@@ -1,4 +1,5 @@
 ﻿using Auction.Contracts.DTO;
+using Auction.Contracts.DTO.Image;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Images;
@@ -45,7 +46,7 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         }
 
         var response = Mapper.Map<AuctionResponse>(auction);
-        response.ImageUrls = auction.Images.Select(x => x.Url).ToList();
+        response.Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();;
         response.AuctionistUserId = auction.AuctionistId;
         response.AuctionistUsername = auction.Auctionist.Username;
 
@@ -65,7 +66,7 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         var result = auctions.Select(x =>
             {
                 var response = Mapper.Map<AuctionResponse>(x);
-                response.ImageUrls = x.Images.Select(x => x.Url).ToList();
+                response.Images = x.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();;
                 response.AuctionistUserId = x.AuctionistId;
                 response.AuctionistUsername = x.Auctionist.Username;
 

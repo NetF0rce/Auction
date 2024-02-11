@@ -1,4 +1,5 @@
 ﻿using Auction.Contracts.DTO;
+using Auction.Contracts.DTO.Image;
 using Auction.Contracts.Enums;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
@@ -18,7 +19,8 @@ public class AuctionsService : BaseService, IAuctionsService
     private readonly IUserAccessor _userAccessor;
     private readonly IImagesService _imagesService;
 
-    public AuctionsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccessor userAccessor, IImagesService imagesService)
+    public AuctionsService(IUnitOfWork unitOfWork, IMapper mapper, IUserAccessor userAccessor,
+        IImagesService imagesService)
         : base(unitOfWork, mapper)
     {
         _userAccessor = userAccessor;
@@ -93,22 +95,22 @@ public class AuctionsService : BaseService, IAuctionsService
     {
         var auction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
 
-        if (auction == null || auction.Status == Domain.Enums.AuctionStatus.NotApproved)
+        if (auction == null || auction.Status == AuctionStatus.NotApproved)
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
 
-        if (auction.Status == Domain.Enums.AuctionStatus.Finished)
+        if (auction.Status == AuctionStatus.Finished)
         {
             throw new InvalidOperationException("Auction has already been finished.");
         }
 
-        if (auction.Status == Domain.Enums.AuctionStatus.Canceled)
+        if (auction.Status == AuctionStatus.Canceled)
         {
             throw new InvalidOperationException("Cannot finish canceled auction.");
         }
 
-        auction.Status = Domain.Enums.AuctionStatus.Finished;
+        auction.Status = AuctionStatus.Finished;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
 
@@ -140,7 +142,7 @@ public class AuctionsService : BaseService, IAuctionsService
 
         var response = Mapper.Map<AuctionResponse>(auction);
         response!.Score = auction.Scores.Average(x => x.Score);
-        response.ImageUrls = auction.Images.Select(x => x.Url).ToList();
+        response.Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url }).ToList();
         response.AuctionistUserId = auction.AuctionistId;
         response.AuctionistUsername = auction.Auctionist.Username;
 
@@ -155,7 +157,7 @@ public class AuctionsService : BaseService, IAuctionsService
             PageNumber = 1,
             SortDirection = SortDirection.ASC
         };
-        
+
         var specification = BuildSpecificationByFilter(filters);
 
         var auctions = await UnitOfWork.AuctionsRepository.GetAllAsync(specification);
@@ -177,13 +179,14 @@ public class AuctionsService : BaseService, IAuctionsService
 
                     if (x.Images != null)
                     {
-                       response.ImageUrls = x.Images.Select(x => x.Url).ToList(); 
+                        response.Images = x.Images.Select(x => new ImageDto { PublicId = x.PublicId, ImageUrl = x.Url })
+                            .ToList();
                     }
-                    
+
                     response.AuctionistUserId = x.AuctionistId;
                     if (x.Auctionist != null)
                     {
-                      response.AuctionistUsername = x.Auctionist.Username;  
+                        response.AuctionistUsername = x.Auctionist.Username;
                     }
 
                     return response;
@@ -229,9 +232,10 @@ public class AuctionsService : BaseService, IAuctionsService
             await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
             createdAuction.Images.Add(auctionImage);
         }
+
         return Mapper.Map<AuctionResponse>(createdAuction)!;
     }
-    
+
     public async Task EditAuctionAsync(long id, EditAuctionRequest auction)
     {
         ArgumentNullException.ThrowIfNull(auction);
@@ -240,13 +244,40 @@ public class AuctionsService : BaseService, IAuctionsService
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
-        
+
         var currentAuctionist = _userAccessor.GetCurrentUserId();
         if (existentAuction.AuctionistId != currentAuctionist)
         {
             throw new InvalidOperationException("You are not the owner of this auction.");
         }
-        Mapper.Map(auction, existentAuction);
+
+        existentAuction.Name = auction.Name;
+        existentAuction.Description = auction.Description;
+        existentAuction.StartPrice = auction.StartPrice;
+        existentAuction.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
+        existentAuction.FinishDateTime = existentAuction.StartDateTime.Add(existentAuction.FinishInterval);
+        var photosToDelete = existentAuction.Images.Select(image => new { image.PublicId, image.Id })
+            .Where(im => !auction.OldImages.Contains(im.PublicId));
+
+        foreach (var photo in photosToDelete)
+        {
+            await _imagesService.DeleteImageAsync(photo.PublicId);
+            await UnitOfWork.AuctionImagesRepository.DeleteByIdAsync(photo.Id);
+        }
+
+        foreach (var image in auction.Images)
+        {
+            var uploadResult = await _imagesService.AddImageAsync(image);
+
+            var auctionImage = new AuctionImage
+            {
+                AuctionId = existentAuction.Id,
+                Url = uploadResult.Url.AbsoluteUri,
+                PublicId = uploadResult.PublicId,
+            };
+
+            await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
+        }
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(existentAuction);
     }
@@ -255,17 +286,17 @@ public class AuctionsService : BaseService, IAuctionsService
     {
         var auction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
 
-        if (auction == null || auction.Status == Domain.Enums.AuctionStatus.NotApproved)
+        if (auction == null || auction.Status == AuctionStatus.NotApproved)
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
 
-        if (auction.Status != Domain.Enums.AuctionStatus.Canceled)
+        if (auction.Status != AuctionStatus.Canceled)
         {
             throw new InvalidOperationException("Auction has not been canceled to recover.");
         }
 
-        auction.Status = Domain.Enums.AuctionStatus.Active;
+        auction.Status = AuctionStatus.Active;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
 
@@ -304,7 +335,8 @@ public class AuctionsService : BaseService, IAuctionsService
 
         if (filters.Status != null)
         {
-            if (filters.Status == Domain.Enums.AuctionStatus.Canceled || filters.Status == Domain.Enums.AuctionStatus.NotApproved)
+            if (filters.Status == Domain.Enums.AuctionStatus.Canceled ||
+                filters.Status == Domain.Enums.AuctionStatus.NotApproved)
             {
                 throw new ArgumentException("Cannot filter by such auction status.");
             }
@@ -313,7 +345,8 @@ public class AuctionsService : BaseService, IAuctionsService
         }
         else
         {
-            specificationBuilder.With(x => x.Status != Domain.Enums.AuctionStatus.Canceled && x.Status != Domain.Enums.AuctionStatus.NotApproved);
+            specificationBuilder.With(x =>
+                x.Status != Domain.Enums.AuctionStatus.Canceled && x.Status != Domain.Enums.AuctionStatus.NotApproved);
         }
 
         specificationBuilder.WithPagination(filters.PageSize, filters.PageNumber);
