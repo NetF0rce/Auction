@@ -13,6 +13,9 @@ public class PublishAuctionRequest
 
     [Required]
     public long FinishIntervalTicks { get; set; }
+    
+    [Required]
+    public long FinishInterval { get; set; }
 
     [Required]
     public decimal StartPrice { get; set; }
