@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { AuctionRoutingModule } from './auction-routing.module';
 import { AuctionListComponent } from './auction-list/auction-list.component';
 import { MaterialModule } from '../../material/material.module';
@@ -18,7 +17,7 @@ import { AuctionPageComponent } from './auction-page/auction-page.component';
   imports: [
     CommonModule,
     AuctionRoutingModule,
-    MaterialModule,
+    MaterialModule
   ],
   exports: [
     AuctionListComponent

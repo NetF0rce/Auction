@@ -6,16 +6,24 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuctionDto } from '../../../models/auction/auction-dto';
+import { Image } from '../../../models/Images/image';
 
 @Component({
   selector: 'auction-create',
   templateUrl: './auction-create.component.html',
-  styleUrl: './auction-create.component.css',
+  styleUrl: './auction-create.component.scss',
 })
 export class AuctionCreateComponent implements OnInit {
-  auctionForm: FormGroup = new FormGroup({});
-  imageUrls: File[] = [];
-  id: string | null = '';
+  auctionForm: FormGroup = this.formBuilder.group({
+    name: ['', Validators.required],
+    description: ['', Validators.required],
+    imageUrls: [[]],
+    startPrice: [0, Validators.required],
+    finishIntervalTicks: [0, Validators.required]
+  });
+  actionEditId: string | undefined;
+  images: Image[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private readonly httpClient: HttpClient,
@@ -31,8 +39,8 @@ export class AuctionCreateComponent implements OnInit {
     }
   }
 
-  buildForm(): void {
-    this.auctionForm = this.formBuilder.group({
+  buildForm() {
+    return this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       imageUrls: [[]],
@@ -41,27 +49,47 @@ export class AuctionCreateComponent implements OnInit {
     });
   }
 
-  onFileChange(event: any): void {
-    const files: FileList = event.target.files;
-    for (let i = 0; i < files.length; i++) {
-      this.imageUrls.push(files[i]);
+  handleFileInput(imageInput: any | null) {
+    if (imageInput) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          this.images.push({
+            imageUrl: e.target?.result,
+            image: imageInput
+          });
+        };
+        img.src = URL.createObjectURL(imageInput);
+      };
+      reader.readAsDataURL(imageInput);
     }
-    this.auctionForm.patchValue({ imageUrls: this.imageUrls });
   }
 
   onSubmit(): void {
     if (this.auctionForm.valid) {
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
-      formData.imageUrls = this.imageUrls;
       const data = FormDataService.objectToFormData(formData);
       if (this.id !== 'undefined') {
         this.httpClient.put(environment.apiUrl + 'auctions/' + this.id, data).subscribe((response: any) => { });
       } else {
         this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
       }
+      var images = this.images.map(im => im.image)
+      data.delete("images");
+
+      for (var i = 0; i < images.length; i++) {
+        data.append('images', images[i]);
+      }
+      this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
     } else {
       // Handle form validation errors
     }
+  }
+
+  dropPhoto(index: number) {
+    this.images.splice(index, 1);
   }
 }
