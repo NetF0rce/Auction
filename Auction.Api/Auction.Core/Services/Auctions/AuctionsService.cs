@@ -1,4 +1,5 @@
 ﻿using Auction.Contracts.DTO;
+using Auction.Contracts.DTO.Image;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Images;
@@ -141,7 +142,7 @@ public class AuctionsService : BaseService, IAuctionsService
 
         var response = Mapper.Map<AuctionResponse>(auction);
         response!.Score = auction.Scores.Average(x => x.Score);
-        response.ImageUrls = auction.Images.Select(x => x.Url).ToList();
+        response.Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();
         response.AuctionistUserId = auction.AuctionistId;
         response.AuctionistUsername = auction.Auctionist.Username;
 
@@ -167,7 +168,7 @@ public class AuctionsService : BaseService, IAuctionsService
                 {
                     var response = Mapper.Map<AuctionResponse>(x);
                     response!.Score = x.Scores.Average(x => x.Score);
-                    response.ImageUrls = x.Images.Select(x => x.Url).ToList();
+                    response.Images = x.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();
                     response.AuctionistUserId = x.AuctionistId;
                     response.AuctionistUsername = x.Auctionist.Username;
 
@@ -230,6 +231,9 @@ public class AuctionsService : BaseService, IAuctionsService
         {
             throw new InvalidOperationException("You are not the owner of this auction.");
         }
+        
+        var oldAuctionPhotos = 
+        
         Mapper.Map(auction, existentAuction);
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(existentAuction);

@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,6 +6,7 @@ import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
 import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { AuctionService } from '../../../core/services/auction.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'auction-create',
@@ -24,7 +23,8 @@ export class AuctionCreateComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private auctionService: AuctionService,
-    private router: Router) { }
+    private router: Router,
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -32,6 +32,7 @@ export class AuctionCreateComponent implements OnInit {
     if (this.id) {
       this.auctionService.getAuctionById(this.id).subscribe((response: AuctionDto) => {
         this.auctionForm.patchValue(response);
+        this.images = response.images
       });
     }
   }
@@ -41,8 +42,8 @@ export class AuctionCreateComponent implements OnInit {
       name: ['', Validators.required],
       description: ['', Validators.required],
       imageUrls: [[]],
-      startPrice: [0, Validators.required],
-      finishInterval: [0, Validators.required]
+      startPrice: [null, [Validators.required, Validators.min(0)]],
+      finishInterval: [null, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -56,7 +57,7 @@ export class AuctionCreateComponent implements OnInit {
           this.images.push({
             imageUrl: e.target?.result,
             image: imageInput
-          });
+          } as Image);
         };
         img.src = URL.createObjectURL(imageInput);
       };
@@ -67,25 +68,32 @@ export class AuctionCreateComponent implements OnInit {
   onSubmit(): void {
     if (this.auctionForm.valid) {
       const formData: AuctionCreate = this.auctionForm.value;
-      console.log(formData);
-      const data = FormDataService.objectToFormData(formData);
-      var images = this.images.map(im => im.image)
-      data.delete("images");
-      for (var i = 0; i < images.length; i++) {
-        data.append('images', images[i]);
-      }
-
-      if (this.id) {
-        this.auctionService.editAuction(this.id, data).subscribe();
+      if (this.images.length == 0) {
+        this.toastr.error("You have to insert photo")
       }
       else {
-        this.auctionService.createAuction(data).subscribe();
-      }
+        const data = FormDataService.objectToFormData(formData);
+        data.delete("images");
+        for (var i = 0; i < this.images.length; i++) {
 
-      this.router.navigate(["/auctions"]);
-    }
-    else {
-      // Handle form validation errors
+          if (this.images[i].publicId) {
+            data.append("oldPhotos", this.images[i].publicId as string)
+          }
+
+          if (this.images[i].image) {
+            data.append('images', this.images[i].image as File);
+          }
+        }
+
+        if (this.id) {
+          this.auctionService.editAuction(this.id, data).subscribe();
+        }
+        else {
+          this.auctionService.createAuction(data).subscribe();
+        }
+
+        this.router.navigate(["/auctions"]);
+      }
     }
   }
 

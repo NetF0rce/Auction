@@ -1,4 +1,5 @@
 export interface Image {
-    image: File;
+    publicId: string | null | undefined;
+    image: File | undefined;
     imageUrl: string | ArrayBuffer | null | undefined;
 }
