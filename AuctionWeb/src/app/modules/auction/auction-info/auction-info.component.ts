@@ -34,7 +34,7 @@ export class AuctionInfoComponent implements OnInit {
     })
   }
   editAuction() {
-    this.router.navigate(['auctions/' + this.auction?.id]);
+    this.router.navigate(['auctions/edit/' + this.auction?.id]);
   }
   viewAuction() {
     this.router.navigate(['auctions/view/' + this.auction?.id]);
