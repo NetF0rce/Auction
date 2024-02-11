@@ -1,4 +1,5 @@
 ﻿using Auction.Contracts.DTO;
+using Auction.Contracts.Enums;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Images;
@@ -118,9 +119,7 @@ public class AuctionsService : BaseService, IAuctionsService
 
         var bids = await UnitOfWork.BidsRepository.GetAllAsync(specification);
 
-        var winningBid = bids
-            .OrderByDescending(x => x.Amount)
-            .FirstOrDefault();
+        var winningBid = bids.MaxBy(x => x.Amount);
 
         if (winningBid != null)
         {
@@ -148,10 +147,15 @@ public class AuctionsService : BaseService, IAuctionsService
         return response;
     }
 
-    public async Task<ListModel<AuctionResponse>> GetAuctionsListAsync(AuctionFiltersDTO filters)
+    public async Task<ListModel<AuctionResponse>> GetAuctionsListAsync()
     {
-        ArgumentNullException.ThrowIfNull(filters);
-
+        var filters = new AuctionFiltersDTO
+        {
+            PageSize = 50,
+            PageNumber = 1,
+            SortDirection = SortDirection.ASC
+        };
+        
         var specification = BuildSpecificationByFilter(filters);
 
         var auctions = await UnitOfWork.AuctionsRepository.GetAllAsync(specification);
@@ -166,10 +170,21 @@ public class AuctionsService : BaseService, IAuctionsService
                 .Select(x =>
                 {
                     var response = Mapper.Map<AuctionResponse>(x);
-                    response!.Score = x.Scores.Average(x => x.Score);
-                    response.ImageUrls = x.Images.Select(x => x.Url).ToList();
+                    if (x.Scores != null)
+                    {
+                        response.Score = x.Scores.Average(x => x.Score);
+                    }
+
+                    if (x.Images != null)
+                    {
+                       response.ImageUrls = x.Images.Select(x => x.Url).ToList(); 
+                    }
+                    
                     response.AuctionistUserId = x.AuctionistId;
-                    response.AuctionistUsername = x.Auctionist.Username;
+                    if (x.Auctionist != null)
+                    {
+                      response.AuctionistUsername = x.Auctionist.Username;  
+                    }
 
                     return response;
                 })
@@ -181,26 +196,25 @@ public class AuctionsService : BaseService, IAuctionsService
         return listModel;
     }
 
-    public async Task PublishAuctionAsync(PublishAuctionRequest auction)
+    public async Task<AuctionResponse> PublishAuctionAsync(PublishAuctionRequest auction)
     {
         ArgumentNullException.ThrowIfNull(auction);
 
-        var auctionToInsert = new Domain.Entities.Auction()
+        var auctionToInsert = new Domain.Entities.Auction
         {
             Name = auction.Name,
             Status = AuctionStatus.NotApproved,
             Description = auction.Description,
             StartPrice = auction.StartPrice,
-            
+            AuctionistId = _userAccessor.GetCurrentUserId(),
+            FinishInterval = TimeSpan.FromTicks(auction.FinishInterval),
+            StartDateTime = DateTime.UtcNow
         };
-        auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
-        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
-        auctionToInsert.StartDateTime = DateTime.UtcNow;
         auctionToInsert.FinishDateTime = auctionToInsert.StartDateTime.Add(auctionToInsert.FinishInterval);
-        auctionToInsert.Status = Domain.Enums.AuctionStatus.Active;
+        auctionToInsert.Status = AuctionStatus.Active;
 
-        await UnitOfWork.AuctionsRepository.AddAsync(auctionToInsert!);
-
+        var createdAuction = await UnitOfWork.AuctionsRepository.AddAsync(auctionToInsert);
+        ArgumentNullException.ThrowIfNull(createdAuction);
         foreach (var image in auction.Images)
         {
             var uploadResult = await _imagesService.AddImageAsync(image);
@@ -213,7 +227,9 @@ public class AuctionsService : BaseService, IAuctionsService
             };
 
             await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
+            createdAuction.Images.Add(auctionImage);
         }
+        return Mapper.Map<AuctionResponse>(createdAuction)!;
     }
     
     public async Task EditAuctionAsync(long id, EditAuctionRequest auction)

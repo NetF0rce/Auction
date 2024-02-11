@@ -10,7 +10,8 @@ import { take } from 'rxjs';
   styleUrl: './auction-info.component.scss'
 })
 export class AuctionInfoComponent implements OnInit {
-  @Input() auction?: AuctionDto;
+  // @ts-ignore
+  @Input() auction: AuctionDto;
   @Input() selected?: boolean;
 
   role: string | null = null;
@@ -23,6 +24,7 @@ export class AuctionInfoComponent implements OnInit {
     private accountService: AccountService) { }
 
   ngOnInit(): void {
+    console.log(this.auction);
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
         if (user) {

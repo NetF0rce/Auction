@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment';
-import { AuctionDto } from '../../../models/auction/auction-dto';
-import { MyResponse } from '../../../models/common/response.model';
+import {Component, OnInit} from '@angular/core';
+import {AuctionService} from "../../../core/services/auction.service";
+// @ts-ignore
+import {AuctionDto} from "../../models/auction/auction-dto";
 
 @Component({
   selector: 'auction-list',
@@ -10,17 +9,17 @@ import { MyResponse } from '../../../models/common/response.model';
   styleUrl: './auction-list.component.scss'
 })
 export class AuctionListComponent implements OnInit {
-  auctions: AuctionDto[] = [];
+  public auctions: AuctionDto[] = [];
 
-  constructor(private readonly httpClient: HttpClient) { }
-
-  ngOnInit(): void {
-    this.getAuctions();
+  constructor(private readonly auctionService: AuctionService) {
   }
 
-  public getAuctions() {
-    this.httpClient.get<MyResponse<AuctionDto>>(environment.apiUrl + 'auctions').subscribe((response: MyResponse<AuctionDto>) => {
-      this.auctions = response.data;
-    });
+  ngOnInit(): void {
+    this.auctionService.getAuctions()
+      .subscribe({
+        next: value => {
+          this.auctions = value.data;
+        }
+      });
   }
 }

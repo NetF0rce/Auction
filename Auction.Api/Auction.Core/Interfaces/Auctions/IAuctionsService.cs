@@ -4,9 +4,9 @@ namespace Auction.Core.Interfaces.Auctions;
 
 public interface IAuctionsService
 {
-    Task<ListModel<AuctionResponse>> GetAuctionsListAsync(AuctionFiltersDTO filters);
+    Task<ListModel<AuctionResponse>> GetAuctionsListAsync();
     Task<AuctionResponse> GetAuctionByIdAsync(long id);
-    Task PublishAuctionAsync(PublishAuctionRequest auction);
+    Task<AuctionResponse> PublishAuctionAsync(PublishAuctionRequest auction);
     Task EditAuctionAsync(long id, EditAuctionRequest auction);
     Task CancelAuctionAsync(long id);
     Task RecoverAuctionAsync(long id);

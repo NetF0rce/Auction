@@ -1,7 +1,6 @@
 ﻿using Auction.Contracts.DTO;
 using Auction.Core.Interfaces.Auctions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auction.Api.Controllers
@@ -21,9 +20,9 @@ namespace Auction.Api.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<ListModel<AuctionResponse>>> GetAuctionsList([FromQuery] AuctionFiltersDTO filters)
+        public async Task<ActionResult<ListModel<AuctionResponse>>> GetAuctionsList()
         {
-            return Ok(await _auctionsService.GetAuctionsListAsync(filters));
+            return Ok(await _auctionsService.GetAuctionsListAsync());
         }
 
         [HttpGet("{id}")]
@@ -35,11 +34,11 @@ namespace Auction.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> PublishAuction([FromForm] PublishAuctionRequest request)
+        public async Task<ActionResult<AuctionResponse>> PublishAuction([FromForm] PublishAuctionRequest request)
         {
-            await _auctionsService.PublishAuctionAsync(request);
+            var auction = await _auctionsService.PublishAuctionAsync(request);
 
-            return Ok(new { Message = "Auction has been successfully published." });
+            return Ok(auction);
         }
         
         [HttpPut("{id}")]

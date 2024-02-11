@@ -1,6 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../../../../environments/environment';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +13,7 @@ import { AuctionService } from '../../../core/services/auction.service';
   styleUrl: './auction-create.component.scss',
 })
 export class AuctionCreateComponent implements OnInit {
+  @Output() auctionCreate = new EventEmitter<AuctionDto>()
   auctionForm: FormGroup = this.buildForm();
   actionEditId: string | undefined;
   id: string | undefined | null;
@@ -69,9 +68,9 @@ export class AuctionCreateComponent implements OnInit {
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
       const data = FormDataService.objectToFormData(formData);
-      var images = this.images.map(im => im.image)
+      let images = this.images.map(im => im.image)
       data.delete("images");
-      for (var i = 0; i < images.length; i++) {
+      for (let i = 0; i < images.length; i++) {
         data.append('images', images[i]);
       }
 
@@ -79,7 +78,13 @@ export class AuctionCreateComponent implements OnInit {
         this.auctionService.editAuction(this.id, data).subscribe();
       }
       else {
-        this.auctionService.createAuction(data).subscribe();
+        this.auctionService.createAuction(data).subscribe(
+          {
+            next: value => {
+              this.auctionCreate.emit(value);
+            }
+          }
+        );
       }
 
       this.router.navigate(["/auctions"]);

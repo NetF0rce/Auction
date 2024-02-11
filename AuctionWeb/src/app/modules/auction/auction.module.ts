@@ -6,6 +6,7 @@ import { MaterialModule } from '../../material/material.module';
 import { AuctionInfoComponent } from './auction-info/auction-info.component';
 import { AuctionCreateComponent } from './auction-create/auction-create.component';
 import { AuctionPageComponent } from './auction-page/auction-page.component';
+import {MatLine} from "@angular/material/core";
 
 @NgModule({
   declarations: [
@@ -14,11 +15,12 @@ import { AuctionPageComponent } from './auction-page/auction-page.component';
     AuctionCreateComponent,
     AuctionPageComponent
   ],
-  imports: [
-    CommonModule,
-    AuctionRoutingModule,
-    MaterialModule
-  ],
+    imports: [
+        CommonModule,
+        AuctionRoutingModule,
+        MaterialModule,
+        MatLine
+    ],
   exports: [
     AuctionListComponent
   ]

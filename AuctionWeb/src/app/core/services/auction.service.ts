@@ -1,22 +1,29 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { AuctionDto } from "../../models/auction/auction-dto";
-import { environment } from "../../../environments/environment";
+import {Injectable} from "@angular/core";
+import {AuctionDto} from "../../models/auction/auction-dto";
+import {environment} from "../../../environments/environment";
+import {HttpInternalService} from "./http-internal.service";
+import {MyResponse} from "../../models/common/response.model";
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AuctionService {
-    constructor(private readonly httpClient: HttpClient) { }
+  constructor(private readonly httpClient: HttpInternalService) {
+  }
 
-    getAuctionById(id: string) {
-        return this.httpClient.get<AuctionDto>(environment.apiUrl + 'auctions/' + id);
-    }
+  public getAuctions(){
+    return this.httpClient.getRequest<MyResponse<AuctionDto>>(environment.apiUrl + 'auctions');
+  }
 
-    editAuction(id: string, data: FormData) {
-        return this.httpClient.put(environment.apiUrl + 'auctions/' + id, data);
-    }
-    createAuction(data: FormData) {
-        return this.httpClient.post(environment.apiUrl + 'auctions', data);
-    }
+  public getAuctionById(id: string) {
+    return this.httpClient.getRequest<AuctionDto>(environment.apiUrl + 'auctions/' + id);
+  }
+
+  public editAuction(id: string, data: FormData) {
+    return this.httpClient.putRequest<AuctionService>(environment.apiUrl + 'auctions/' + id, data);
+  }
+
+  public createAuction(data: FormData) {
+    return this.httpClient.postRequest<AuctionDto>(environment.apiUrl + 'auctions', data);
+  }
 }
