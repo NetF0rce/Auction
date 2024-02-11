@@ -10,6 +10,6 @@ public class BidsRepository(ApplicationDbContext context) : BaseRepository<Bid>(
 {
     public async Task<IEnumerable<Bid>> GetBidsByAuctionIdAsync(long id)
     {
-        return await context.Bid.Where(a => a.AuctionId == id).OrderByDescending(a => a.Amout).ToListAsync();
+        return await context.Bid.Where(a => a.AuctionId == id).OrderByDescending(a => a.Amount).ToListAsync();
     }
 }

@@ -33,8 +33,6 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         auction.FinishDateTime = auction.StartDateTime + auction.FinishInterval;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
-
-        // TODO: add email sending to user
     }
 
     public async Task<AuctionResponse> GetNotApprovedAuctionByIdAsync(long id)
@@ -93,7 +91,5 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         }
 
         await UnitOfWork.AuctionsRepository.DeleteByIdAsync(request.AuctionId);
-
-        // TODO: Send email to user with rejection reason
     }
 }
