@@ -3,5 +3,5 @@ export interface AuctionCreate {
   description: string;
   images: File[];
   startPrice: number;
-  finishIntervalTicks: number;
+  finishInterval: number;
 }
