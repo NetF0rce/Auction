@@ -6,6 +6,7 @@ using Auction.Core.Interfaces.UserAccessor;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
 using Auction.Domain.Entities;
+using Auction.Domain.Enums;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -184,7 +185,14 @@ public class AuctionsService : BaseService, IAuctionsService
     {
         ArgumentNullException.ThrowIfNull(auction);
 
-        var auctionToInsert = Mapper.Map<Domain.Entities.Auction>(auction);
+        var auctionToInsert = new Domain.Entities.Auction()
+        {
+            Name = auction.Name,
+            Status = AuctionStatus.NotApproved,
+            Description = auction.Description,
+            StartPrice = auction.StartPrice,
+            
+        };
         auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
         auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishIntervalTicks);
         auctionToInsert.StartDateTime = DateTime.UtcNow;
