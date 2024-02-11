@@ -15,7 +15,7 @@ public class Bid : EntityBase
     public DateTime DateAndTime { get; set; }
 
     [Required]
-    public decimal Amout { get; set; }
+    public decimal Amount { get; set; }
 
     [Required]
     public bool IsWinning { get; set; }

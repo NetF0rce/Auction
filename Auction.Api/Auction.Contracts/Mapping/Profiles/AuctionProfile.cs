@@ -9,5 +9,6 @@ public class AuctionProfile : Profile
     {
         CreateMap<Domain.Entities.Auction, AuctionResponse>();
         CreateMap<PublishAuctionRequest, Domain.Entities.Auction>();
+        CreateMap<EditAuctionRequest, Domain.Entities.Auction>();
     }
 }

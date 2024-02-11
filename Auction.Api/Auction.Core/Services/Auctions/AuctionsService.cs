@@ -24,8 +24,6 @@ public class AuctionsService : BaseService, IAuctionsService
         _imagesService = imagesService;
     }
 
-    
-
     public async Task CancelAuctionAsync(long id)
     {
         var auction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
@@ -48,8 +46,6 @@ public class AuctionsService : BaseService, IAuctionsService
         auction.Status = Domain.Enums.AuctionStatus.Canceled;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
-
-        // TODO: Inform auctionist of canceling auction.
     }
 
     public async Task ConfirmPaymentForAuctionAsync(long id)
@@ -90,8 +86,6 @@ public class AuctionsService : BaseService, IAuctionsService
         auction.IsPaid = true;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
-
-        // TODO: inform auctionist of payment
     }
 
     public async Task FinishAuctionAsync(long id)
@@ -125,7 +119,7 @@ public class AuctionsService : BaseService, IAuctionsService
         var bids = await UnitOfWork.BidsRepository.GetAllAsync(specification);
 
         var winningBid = bids
-            .OrderByDescending(x => x.Amout)
+            .OrderByDescending(x => x.Amount)
             .FirstOrDefault();
 
         if (winningBid != null)
@@ -133,11 +127,7 @@ public class AuctionsService : BaseService, IAuctionsService
             winningBid.IsWinning = true;
 
             await UnitOfWork.BidsRepository.UpdateAsync(winningBid);
-
-            // TODO: inform winner
         }
-
-        // TODO: inform auctionist
     }
 
     public async Task<AuctionResponse> GetAuctionByIdAsync(long id)
@@ -204,7 +194,10 @@ public class AuctionsService : BaseService, IAuctionsService
             
         };
         auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
-        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishIntervalTicks);
+        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
+        auctionToInsert.StartDateTime = DateTime.UtcNow;
+        auctionToInsert.FinishDateTime = auctionToInsert.StartDateTime.Add(auctionToInsert.FinishInterval);
+        auctionToInsert.Status = Domain.Enums.AuctionStatus.Active;
 
         await UnitOfWork.AuctionsRepository.AddAsync(auctionToInsert!);
 
@@ -221,24 +214,25 @@ public class AuctionsService : BaseService, IAuctionsService
 
             await UnitOfWork.AuctionImagesRepository.AddAsync(auctionImage);
         }
-
-        // TODO: inform auctionist
     }
     
     public async Task EditAuctionAsync(long id, EditAuctionRequest auction)
     {
         ArgumentNullException.ThrowIfNull(auction);
-        var isExists = await UnitOfWork.AuctionsRepository.IsExistAsync(id);
-        if (!isExists)
+        var existentAuction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
+        if (existentAuction is null)
         {
             throw new KeyNotFoundException("Auction with such id does not exist.");
         }
         
-        var auctionToEdit = Mapper.Map<Domain.Entities.Auction>(auction);
-        var currentAuction = await UnitOfWork.AuctionsRepository.GetByIdAsync(id);
         var currentAuctionist = _userAccessor.GetCurrentUserId();
-        
-        
+        if (existentAuction.AuctionistId != currentAuctionist)
+        {
+            throw new InvalidOperationException("You are not the owner of this auction.");
+        }
+        Mapper.Map(auction, existentAuction);
+
+        await UnitOfWork.AuctionsRepository.UpdateAsync(existentAuction);
     }
 
     public async Task RecoverAuctionAsync(long id)
@@ -268,8 +262,6 @@ public class AuctionsService : BaseService, IAuctionsService
         await UnitOfWork.BidsRepository.DeleteRangeAsync(bids);
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
-
-        // TODO: Inform auctionist of recovering auction.
     }
 
     private ISpecification<Domain.Entities.Auction> BuildSpecificationByFilter(AuctionFiltersDTO filters)

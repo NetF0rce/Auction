@@ -19,13 +19,13 @@ public class Auction : EntityBase
     public string Description { get; set; }
 
     [AllowNull]
-    public DateTime? StartDateTime { get; set; }
+    public DateTime StartDateTime { get; set; }
 
     [AllowNull]
     public DateTime? FinishDateTime { get; set; }
 
     [Required]
-    public TimeSpan? FinishInterval { get; set; }
+    public TimeSpan FinishInterval { get; set; }
 
     [Required]
     [Range(0, 10e10)]

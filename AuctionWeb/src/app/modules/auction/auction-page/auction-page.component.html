@@ -1,0 +1,39 @@
+<div class="auction-page-container">
+  <div class="auction-info">
+    <mat-card *ngIf="auction">
+      <mat-card-header>
+        <mat-card-title>{{ auction.name }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Description: {{ auction.description }}</p>
+        <p>Start Date: {{ auction.startDateTime }}</p>
+        <p>End Date: {{ auction.endDateTime }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="bid-list">
+    <h3>Bids</h3>
+    <div class="add-bid-form">
+      <form #bidForm="ngForm" (ngSubmit)="submitBid(bidForm)">
+        <mat-form-field>
+          <input matInput type="number" placeholder="Enter bid amount" name="newBidAmount" [(ngModel)]="newBidAmount"
+            required>
+        </mat-form-field>
+        <button mat-raised-button type="submit" [disabled]="!bidForm.valid">Submit Bid</button>
+      </form>
+    </div>
+    <mat-list *ngIf="bids">
+      <mat-list-item *ngFor="let bid of bids">
+        <h4 mat-line>Bidder: {{ bid.bidderName }}</h4>
+        <p mat-line>Amount: {{ bid.amount }}</p>
+        <p mat-line>Date and Time: {{ bid.dateAndTime }}</p>
+      </mat-list-item>
+    </mat-list>
+    <h3>Users</h3>
+    <mat-list *ngIf="users">
+      <mat-list-item *ngFor="let user of users">
+        <h4 mat-line>Bidder: {{ user.name }}</h4>
+      </mat-list-item>
+    </mat-list>
+  </div>
+</div>

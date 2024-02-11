@@ -13,8 +13,7 @@ public class BidService(IAuctionsRepository auctionsRepository, IBidsRepository 
 {
     public async Task<BidResponse> SetNewBid(BidAddRequest bidAddRequest)
     {
-        if (bidAddRequest.BidderId != userAccessor.GetCurrentUserId())
-            throw new ArgumentException("You should make bids from your own account");
+        bidAddRequest.BidderId = userAccessor.GetCurrentUserId();
         
         var auction = await auctionsRepository.GetByIdAsync(bidAddRequest.AuctionId);
 
@@ -24,16 +23,15 @@ public class BidService(IAuctionsRepository auctionsRepository, IBidsRepository 
         if (auction.FinishDateTime is not null && auction.FinishDateTime.Value.ToUniversalTime() < DateTime.UtcNow)
             throw new AuctionExpiredException();
 
-        if (auction.FinishDateTime is not null && auction.FinishDateTime.Value.ToUniversalTime() < DateTime.UtcNow)
-            throw new UnstartedAuctionException();
-
         if (auction.AuctionistId == bidAddRequest.BidderId)
             throw new ArgumentException("You cannot bid on your own auction");
 
         var bids = (await bidsRepository.GetBidsByAuctionIdAsync(auction.Id)).ToList();
 
-        if (bids.Count == 0 && bids.First().Amout >= bidAddRequest.Amout)
-            throw new ArgumentException("Bid amount should be bigger than current max bid amount");
+        if (bids.Count == 0 && bidAddRequest.Amount <= auction.StartPrice)
+            throw new ArgumentException("Bid amount should be bigger than auction start price");
+        if (bids.Count > 1 && bidAddRequest.Amount <= bids.Max(x => x.Amount))
+            throw new ArgumentException("Bid amount should be bigger than last bid ammount");
 
         var bid = mapper.Map<Bid>(bidAddRequest);
 

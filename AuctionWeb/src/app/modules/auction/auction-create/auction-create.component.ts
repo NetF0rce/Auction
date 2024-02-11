@@ -1,15 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
+import { ActivatedRoute } from '@angular/router';
+import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
-<<<<<<< Updated upstream
-=======
 import { AuctionCreate } from '../../../models/Auction/auction-create';
 import { AuctionService } from '../../../core/services/auction.service';
->>>>>>> Stashed changes
 
 @Component({
   selector: 'auction-create',
@@ -19,17 +17,11 @@ import { AuctionService } from '../../../core/services/auction.service';
 export class AuctionCreateComponent implements OnInit {
   auctionForm: FormGroup = this.buildForm();
   actionEditId: string | undefined;
+  id: string | undefined | null;
   images: Image[] = [];
-
 
   constructor(
     private formBuilder: FormBuilder,
-<<<<<<< Updated upstream
-    private readonly httpClient: HttpClient) { }
-
-  ngOnInit(): void {
-    this.buildForm();
-=======
     private route: ActivatedRoute,
     private auctionService: AuctionService) { }
 
@@ -41,7 +33,6 @@ export class AuctionCreateComponent implements OnInit {
         this.auctionForm.patchValue(response);
       });
     }
->>>>>>> Stashed changes
   }
 
   buildForm() {
@@ -77,16 +68,14 @@ export class AuctionCreateComponent implements OnInit {
       const formData: AuctionCreate = this.auctionForm.value;
       console.log(formData);
       const data = FormDataService.objectToFormData(formData);
-      var images = this.images.map(im => im.image)
-      data.delete("images");
+      
+        var images = this.images.map(im => im.image)
+        data.delete("images");
 
-      for (var i = 0; i < images.length; i++) {
-        data.append('images', images[i]);
-      }
-<<<<<<< Updated upstream
-      this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
-    } else {
-=======
+        for (var i = 0; i < images.length; i++) {
+          data.append('images', images[i]);
+        
+
 
       if (this.id) {
         this.auctionService.editAuction(this.id, data).subscribe();
@@ -96,7 +85,6 @@ export class AuctionCreateComponent implements OnInit {
       }
     }
     else {
->>>>>>> Stashed changes
       // Handle form validation errors
     }
   }
