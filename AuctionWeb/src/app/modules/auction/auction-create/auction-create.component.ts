@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
 import { AuctionCreate } from '../../../models/Auction/auction-create';
@@ -23,7 +23,8 @@ export class AuctionCreateComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
-    private auctionService: AuctionService) { }
+    private auctionService: AuctionService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.buildForm();
@@ -80,6 +81,8 @@ export class AuctionCreateComponent implements OnInit {
       else {
         this.auctionService.createAuction(data).subscribe();
       }
+
+      this.router.navigate(["/auctions"]);
     }
     else {
       // Handle form validation errors
