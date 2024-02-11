@@ -1,8 +1,10 @@
+import { Image } from "../Images/image"
+
 export interface AuctionDto {
   id: number
   name: string
   description: string
-  imageUrls: string[]
+  images: Image[]
   score: number
   startDateTime: string
   endDateTime: string
