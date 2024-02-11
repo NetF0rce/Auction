@@ -10,9 +10,6 @@ public class PublishAuctionRequest
 
     [Required]
     public string Description { get; set; }
-
-    [Required]
-    public long FinishIntervalTicks { get; set; }
     
     [Required]
     public long FinishInterval { get; set; }

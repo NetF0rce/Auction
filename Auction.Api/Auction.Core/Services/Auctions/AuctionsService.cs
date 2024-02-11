@@ -194,7 +194,7 @@ public class AuctionsService : BaseService, IAuctionsService
             
         };
         auctionToInsert.AuctionistId = _userAccessor.GetCurrentUserId();
-        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishIntervalTicks);
+        auctionToInsert.FinishInterval = TimeSpan.FromTicks(auction.FinishInterval);
         auctionToInsert.StartDateTime = DateTime.UtcNow;
         auctionToInsert.FinishDateTime = auctionToInsert.StartDateTime.Add(auctionToInsert.FinishInterval);
         auctionToInsert.Status = Domain.Enums.AuctionStatus.Active;

@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { AuctionCreate } from '../../../models/auction/auction-create';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { FormDataService } from '../../../core/services/form.data.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuctionDto } from '../../../models/auction/auction-dto';
 import { Image } from '../../../models/Images/image';
+import { AuctionCreate } from '../../../models/Auction/auction-create';
 
 @Component({
   selector: 'auction-create',
@@ -22,6 +22,7 @@ export class AuctionCreateComponent implements OnInit {
     finishIntervalTicks: [0, Validators.required]
   });
   actionEditId: string | undefined;
+  id: string | undefined | null;
   images: Image[] = [];
 
   constructor(
@@ -76,14 +77,14 @@ export class AuctionCreateComponent implements OnInit {
         this.httpClient.put(environment.apiUrl + 'auctions/' + this.id, data).subscribe((response: any) => { });
       } else {
         this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
-      }
-      var images = this.images.map(im => im.image)
-      data.delete("images");
+        var images = this.images.map(im => im.image)
+        data.delete("images");
 
-      for (var i = 0; i < images.length; i++) {
-        data.append('images', images[i]);
+        for (var i = 0; i < images.length; i++) {
+          data.append('images', images[i]);
+        }
+        this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
       }
-      this.httpClient.post(environment.apiUrl + 'auctions', data).subscribe((response: any) => { });
     } else {
       // Handle form validation errors
     }
