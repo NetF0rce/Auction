@@ -1,2 +1,5 @@
 <button mat-button color="primary" routerLink="/create">Create</button>
-<auction-info *ngFor="let auction of auctions" [auction]="auction"></auction-info>
+<div class="container">
+  <auction-info *ngFor="let auction of auctions" [auction]="auction"></auction-info>
+</div>
+

@@ -222,7 +222,8 @@ public class AuctionsService : BaseService, IAuctionsService
             StartPrice = auction.StartPrice,
             AuctionistId = _userAccessor.GetCurrentUserId(),
             FinishInterval = TimeSpan.FromTicks(auction.FinishInterval),
-            StartDateTime = DateTime.UtcNow
+            StartDateTime = DateTime.UtcNow,
+            FinishDateTime = DateTime.Now.Add(new TimeSpan(1))
         };
         auctionToInsert.FinishDateTime = auctionToInsert.StartDateTime.Add(auctionToInsert.FinishInterval);
         auctionToInsert.Status = AuctionStatus.Active;
