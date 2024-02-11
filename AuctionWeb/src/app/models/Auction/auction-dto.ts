@@ -1,4 +1,4 @@
-import { Image } from "../Images/image"
+import { Image } from '../../models/Images/image';
 
 export interface AuctionDto {
   id: number

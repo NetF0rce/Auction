@@ -30,6 +30,7 @@
               <mat-label>Start price</mat-label>
               <input matInput
                      placeholder="startPrice"
+                     type="number"
                      [formControl]="$any(auctionForm.controls['startPrice'])">
             </mat-form-field>
           </td>
@@ -40,6 +41,7 @@
 
               <input matInput
                      placeholder="finishInterval"
+                     type="number"
                      [formControl]="$any(auctionForm.controls['finishInterval'])">
             </mat-form-field>
           </td>

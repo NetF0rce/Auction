@@ -5,5 +5,5 @@ namespace Auction.Contracts.DTO;
 
 public class EditAuctionRequest : PublishAuctionRequest
 {
-    public List<string> OldImages { get; set; }
+    public List<string>? OldPhotos { get; set; }
 }
