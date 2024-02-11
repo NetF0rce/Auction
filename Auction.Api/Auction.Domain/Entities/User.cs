@@ -13,21 +13,18 @@ public class User : EntityBase
     [MaxLength(30)]
     public string FullName { get; set; }
 
-    [Required]
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 
     [Required]
     [MaxLength(30)]
     [EmailAddress]
     public string Email { get; set; }
 
-    [Required]
     [MaxLength(300)]
-    public byte[] PasswordHash { get; set; }
-
-    [Required]
+    public byte[]? PasswordHash { get; set; }
+    
     [MaxLength(300)]
-    public byte[] PasswordSalt { get; set; }
+    public byte[]? PasswordSalt { get; set; }
 
     [Required]
     public UserRole Role { get; set; }

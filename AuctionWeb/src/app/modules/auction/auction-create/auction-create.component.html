@@ -1,0 +1,94 @@
+<div class="container">
+  <form [formGroup]="auctionForm"
+        (ngSubmit)="onSubmit()">
+    <div class="main-form-container">
+      <h1>{{actionEditId ? "Edit" : "Create"}} Auction</h1>
+
+      <table class="auction-form-body w-100">
+        <tr>
+          <td>
+            <mat-form-field class="w-100">
+              <mat-label>Name</mat-label>
+              <input matInput
+                     placeholder="Name"
+                     [formControl]="$any(auctionForm.controls['name'])">
+            </mat-form-field>
+          </td>
+          <td class="column-divider"></td>
+          <td>
+            <mat-form-field class="w-100">
+              <mat-label>Description</mat-label>
+              <input matInput
+                     placeholder="Description"
+                     [formControl]="$any(auctionForm.controls['description'])">
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <mat-form-field class="w-100">
+              <mat-label>Start price</mat-label>
+              <input matInput
+                     placeholder="startPrice"
+                     type="number"
+                     [formControl]="$any(auctionForm.controls['startPrice'])">
+            </mat-form-field>
+          </td>
+          <td class="column-divider"></td>
+          <td>
+            <mat-form-field class="w-100">
+              <mat-label>finish interval (in hours)</mat-label>
+
+              <input matInput
+                     placeholder="finishInterval"
+                     type="number"
+                     [formControl]="$any(auctionForm.controls['finishInterval'])">
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+
+      <div class="images-container"
+           *ngIf="images.length > 0">
+        <div *ngFor="let image of images; let i = index">
+          <div class="image-container">
+            <img class="image"
+                 [src]="image.imageUrl"
+                 alt="Image Preview">
+            <button (click)="dropPhoto(i)"
+                    class="close-button">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   height="70"
+                   width="52.5"
+                   viewBox="0 0 384 512"
+                   style="fill: aliceblue;">
+                <path
+                      d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <input type="file"
+             #fileInput
+             style="display: none"
+             (change)="handleFileInput(fileInput.files ? fileInput.files[0] : null)">
+
+      <button type="button"
+              mat-raised-button
+              color="accent"
+              (click)="fileInput.click()">Load {{images.length > 0 ? "
+        More"
+        : "Photo"
+        }}</button>
+    </div>
+
+    <div class="w-100 d-flex justify-content-end p-4">
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              class="submit-form-btn">Submit</button>
+    </div>
+  </form>
+</div>

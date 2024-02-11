@@ -1,4 +1,5 @@
-﻿using Auction.Domain.Enums;
+﻿using Auction.Contracts.DTO.Image;
+using Auction.Domain.Enums;
 
 namespace Auction.Contracts.DTO;
 
@@ -7,8 +8,10 @@ public class AuctionResponse
     public long Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public List<string> ImageUrls { get; set; }
+    public List<ImageDto> Images { get; set; }
     public double Score { get; set; }
+    public long FinishInterval { get; set; }
+    public decimal StartPrice { get; set; } 
     public DateTime? StartDateTime { get; set; }
     public DateTime? EndDateTime { get; set; }
     public long AuctionistUserId { get; set; }

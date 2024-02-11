@@ -1,7 +1,6 @@
 ﻿using Auction.Contracts.DTO;
 using Auction.Core.Interfaces.Auctions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auction.Api.Controllers
@@ -21,9 +20,9 @@ namespace Auction.Api.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<ListModel<AuctionResponse>>> GetAuctionsList([FromQuery] AuctionFiltersDTO filters)
+        public async Task<ActionResult<ListModel<AuctionResponse>>> GetAuctionsList()
         {
-            return Ok(await _auctionsService.GetAuctionsListAsync(filters));
+            return Ok(await _auctionsService.GetAuctionsListAsync());
         }
 
         [HttpGet("{id}")]
@@ -35,21 +34,30 @@ namespace Auction.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> PublishAuction([FromBody] PublishAuctionRequest request)
+        public async Task<ActionResult> PublishAuction([FromForm] PublishAuctionRequest request)
         {
             await _auctionsService.PublishAuctionAsync(request);
-
-            return Ok(new { Message = "Auction has been successfully published." });
+            
+            return Ok();
         }
-
+        
         [HttpPut("{id}")]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult> ConfirmPayment([FromRoute] long id)
+        public async Task<ActionResult> UpdateAuction([FromRoute] long id, [FromForm]EditAuctionRequest request)
         {
-            await _auctionsService.ConfirmPaymentForAuctionAsync(id);
+            await _auctionsService.EditAuctionAsync(id, request);
 
-            return Ok(new { Message = "Payment has been successfully confirmed." });
+            return Ok(new { Message = "Auction has been successfully updated." });
         }
+
+        // [HttpPut("{id}")]
+        // [Authorize(Roles = "Customer")]
+        // public async Task<ActionResult> ConfirmPayment([FromRoute] long id)
+        // {
+        //     await _auctionsService.ConfirmPaymentForAuctionAsync(id);
+        //
+        //     return Ok(new { Message = "Payment has been successfully confirmed." });
+        // }
 
         [HttpPut("{id}/cancel")]
         [Authorize(Roles = "Admin")]
@@ -60,45 +68,45 @@ namespace Auction.Api.Controllers
             return Ok(new { Message = "Auction has been successfully canceled." });
         }
 
-        [HttpPut("{id}/recover")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> RecoverAuction([FromRoute] long id)
-        {
-            await _auctionsService.RecoverAuctionAsync(id);
+        //[HttpPut("{id}/recover")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult> RecoverAuction([FromRoute] long id)
+        //{
+        //    await _auctionsService.RecoverAuctionAsync(id);
 
-            return Ok(new { Message = "Auction has been successfully recovered." });
-        }
+        //    return Ok(new { Message = "Auction has been successfully recovered." });
+        //}
 
-        [HttpGet("not-appoved")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<AuctionResponse>>> GetNotApprovedAuctions()
-        {
-            return Ok(await _auctionsVerificationService.GetNotApprovedAuctionsAsync());
-        }
+        //[HttpGet("not-appoved")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult<IEnumerable<AuctionResponse>>> GetNotApprovedAuctions()
+        //{
+        //    return Ok(await _auctionsVerificationService.GetNotApprovedAuctionsAsync());
+        //}
 
-        [HttpGet("not-appoved/{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<AuctionResponse>> GetNotApprovedAuctionById([FromRoute] long id)
-        {
-            return Ok(await _auctionsVerificationService.GetNotApprovedAuctionByIdAsync(id));
-        }
+        //[HttpGet("not-appoved/{id}")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult<AuctionResponse>> GetNotApprovedAuctionById([FromRoute] long id)
+        //{
+        //    return Ok(await _auctionsVerificationService.GetNotApprovedAuctionByIdAsync(id));
+        //}
 
-        [HttpPut("not-approved/{id}/approve")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> ApproveAuction([FromRoute] long id)
-        {
-            await _auctionsVerificationService.ApproveAuctionAsync(id);
+        //[HttpPut("not-approved/{id}/approve")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult> ApproveAuction([FromRoute] long id)
+        //{
+        //    await _auctionsVerificationService.ApproveAuctionAsync(id);
 
-            return Ok(new { Message = "Auction has been successfully approved." });
-        }
+        //    return Ok(new { Message = "Auction has been successfully approved." });
+        //}
 
-        [HttpPut("not-approved/{id}/reject")]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> RejectAuction([FromBody] RejectAuctionRequest request)
-        {
-            await _auctionsVerificationService.RejectAuctionAsync(request);
+        //[HttpPut("not-approved/{id}/reject")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<ActionResult> RejectAuction([FromBody] RejectAuctionRequest request)
+        //{
+        //    await _auctionsVerificationService.RejectAuctionAsync(request);
 
-            return Ok(new { Message = "Auction has been rejected." });
-        }
+        //    return Ok(new { Message = "Auction has been rejected." });
+        //}
     }
 }

@@ -1,0 +1,33 @@
+.book-card {
+  width: 400px;
+  height: 200px;
+  cursor: pointer;
+
+  &:hover .action{
+    display: block;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.description {
+  height: 80px;
+  overflow: hidden;
+
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.action {
+  display: none
+}
+
+.active {
+  display: block
+}

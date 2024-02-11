@@ -34,7 +34,7 @@ export class AccountService {
   }
 
   externalLogin = (body: ExternalAuthDto) => {
-    return this.http.post<User>(this.baseUrl + "account/external-login", body).pipe(
+    return this.http.post<User>(this.baseUrl + "auth/external-login", body).pipe(
       map((response: User) => {
         const user = response;
         if (user) {
@@ -49,7 +49,7 @@ export class AccountService {
   }
 
   login(model: any) {
-    return this.http.post<User>(this.baseUrl + 'account/login', model).pipe(
+    return this.http.post<User>(this.baseUrl + 'auth/login', model).pipe(
       map((response: User) => {
         const user = response;
         if (user) {
@@ -60,7 +60,7 @@ export class AccountService {
   }
 
   register(model: any) {
-    return this.http.post<User>(this.baseUrl + 'account/register', model).pipe(
+    return this.http.post<User>(this.baseUrl + 'auth/register', model).pipe(
       map(response => {
         const user = response;
         if (user) {
@@ -78,6 +78,7 @@ export class AccountService {
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    this.externalAuthService.signOut();
   }
 
   isCurrentUserAdmin() {

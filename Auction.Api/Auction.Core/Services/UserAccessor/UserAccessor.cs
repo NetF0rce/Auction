@@ -6,20 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Auction.Core.Services.UserAccessor;
 
-public class UserAccessor : IUserAccessor
+public class UserAccessor(IHttpContextAccessor httpContextAccessor, ILogger<UserAccessor> logger)
+    : IUserAccessor
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<UserAccessor> _logger;
-
-    public UserAccessor(IHttpContextAccessor httpContextAccessor, ILogger<UserAccessor> logger)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _logger = logger;
-    }
-
     public long GetCurrentUserId()
     {
-        var id = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var id = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
         if(id is null)
             throw new AuthenticationException("User is not authorized");
@@ -31,7 +23,7 @@ public class UserAccessor : IUserAccessor
         }
         catch (Exception e)
         {
-            _logger.LogError("Cannot parse user id");
+            logger.LogError("Cannot parse user id");
             throw new ApplicationException("User id is messed up");
         }
         

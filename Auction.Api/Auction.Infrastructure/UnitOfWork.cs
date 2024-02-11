@@ -1,9 +1,6 @@
 ﻿using Auction.Core.Interfaces.Data;
 using Auction.Core.Interfaces.Users;
-using Auction.Domain.Entities;
-using Auction.Core.Interfaces.Users;
 using Auction.Infrastructure.Database;
-using Auction.Infrastructure.Repositories;
 
 namespace Auction.Infrastructure;
 
@@ -16,20 +13,26 @@ public class UnitOfWork : IUnitOfWork
 
     private readonly IBidsRepository _bidsRepository;
     public IBidsRepository BidsRepository => _bidsRepository;
-
-    public ICommentRepository CommentsRepository { get; init; }
+    public ICommentsRepository CommentsRepository { get; init; }
+    public IScoreRepository ScoreRepository { get; init; }
     public IUserRepository UserRepository { get; }
+    public IAuctionImagesRepository AuctionImagesRepository { get; init; }
 
-    public UnitOfWork(ApplicationDbContext context, IAuctionsRepository auctionsRepository,
-        ICommentRepository commentsRepository,
+    public UnitOfWork(ApplicationDbContext context, 
+        IAuctionsRepository auctionsRepository,
+        ICommentsRepository commentsRepository,
         IUserRepository userRepository,
-        IBidsRepository bidsRepository)
+        IBidsRepository bidsRepository, 
+        IAuctionImagesRepository auctionImagesRepository,
+        IScoreRepository scoreRepository)
     {
         _context = context;
         _auctionsRepository = auctionsRepository;
         _bidsRepository = bidsRepository;
         CommentsRepository = commentsRepository;
         UserRepository = userRepository;
+        AuctionImagesRepository = auctionImagesRepository;
+        ScoreRepository = scoreRepository;
     }
 
     public Task CreateTransactionAsync()

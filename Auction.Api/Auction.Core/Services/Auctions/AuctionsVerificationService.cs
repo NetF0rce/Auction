@@ -1,9 +1,10 @@
 ﻿using Auction.Contracts.DTO;
+using Auction.Contracts.DTO.Image;
 using Auction.Core.Interfaces.Auctions;
 using Auction.Core.Interfaces.Data;
+using Auction.Core.Interfaces.Images;
 using Auction.Core.Services.Abstract;
 using Auction.Core.Specifications;
-using Auction.Domain.Entities;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,9 +12,12 @@ namespace Auction.Core.Services.Auctions;
 
 public class AuctionsVerificationService : BaseService, IAuctionsVerificationService
 {
-    public AuctionsVerificationService(IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IImagesService _imagesService;
+
+    public AuctionsVerificationService(IUnitOfWork unitOfWork, IMapper mapper, IImagesService imagesService)
         : base(unitOfWork, mapper)
     {
+        _imagesService = imagesService;
     }
 
     public async Task ApproveAuctionAsync(long id)
@@ -30,8 +34,6 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         auction.FinishDateTime = auction.StartDateTime + auction.FinishInterval;
 
         await UnitOfWork.AuctionsRepository.UpdateAsync(auction);
-
-        // TODO: add email sending to user
     }
 
     public async Task<AuctionResponse> GetNotApprovedAuctionByIdAsync(long id)
@@ -44,7 +46,7 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         }
 
         var response = Mapper.Map<AuctionResponse>(auction);
-        response.ImageUrls = auction.Images.Select(x => x.Url).ToList();
+        response.Images = auction.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();;
         response.AuctionistUserId = auction.AuctionistId;
         response.AuctionistUsername = auction.Auctionist.Username;
 
@@ -64,7 +66,7 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
         var result = auctions.Select(x =>
             {
                 var response = Mapper.Map<AuctionResponse>(x);
-                response.ImageUrls = x.Images.Select(x => x.Url).ToList();
+                response.Images = x.Images.Select(x => new ImageDto { PublicId = x.PublicId,ImageUrl = x.Url}).ToList();;
                 response.AuctionistUserId = x.AuctionistId;
                 response.AuctionistUsername = x.Auctionist.Username;
 
@@ -84,8 +86,11 @@ public class AuctionsVerificationService : BaseService, IAuctionsVerificationSer
             throw new KeyNotFoundException("Not approved auction with such id does not exist.");
         }
 
-        await UnitOfWork.AuctionsRepository.DeleteByIdAsync(request.AuctionId);
+        foreach(var image in auction.Images)
+        {
+            await _imagesService.DeleteImageAsync(image.PublicId);
+        }
 
-        // TODO: Send email to user with rejection reason
+        await UnitOfWork.AuctionsRepository.DeleteByIdAsync(request.AuctionId);
     }
 }

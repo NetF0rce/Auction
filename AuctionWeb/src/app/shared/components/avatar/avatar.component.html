@@ -1,0 +1,8 @@
+<div class="avatar"
+     [ngStyle]="{ 'background-color': circleColor, 'width.px': size, 'height.px': size }">
+  <img *ngIf="!showInitials" [src]="photoUrl" alt="User Photo" class="rounded-full" [style.width.px]="size">
+
+  <div *ngIf="showInitials" class="initials" [style.fontSize.px]="getFontSize()">
+    {{ initials | titlecase}}
+  </div>
+</div>
